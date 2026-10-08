@@ -2,9 +2,11 @@
 from __future__ import annotations
 
 import argparse
+import getpass
 import hashlib
 import json
 import os
+import re
 import shutil
 import subprocess
 from pathlib import Path
@@ -12,6 +14,7 @@ from typing import Any
 
 FIXED_DATE = "2025-01-02T03:04:05+00:00"
 HOME_ALIAS = "~"
+USER_ALIAS = "aluno"
 
 
 def load_steps(path: Path) -> dict[str, Any]:
@@ -83,6 +86,7 @@ def run(steps_path: Path, work_root: Path, output_path: Path) -> None:
     env = controlled_environment(home, columns)
     configure_git(env)
     alias_from = str(work_root.resolve())
+    user_pattern = re.compile(r"\b" + re.escape(getpass.getuser()) + r"\b")
 
     captured: list[dict[str, Any]] = []
     for index, source_step in enumerate(spec["steps"]):
@@ -94,7 +98,9 @@ def run(steps_path: Path, work_root: Path, output_path: Path) -> None:
         except subprocess.TimeoutExpired as error:
             raise RuntimeError(f"passo {step['id']!r} passou de 60 s: {command}") from error
         stdout = result.stdout.decode("utf-8", errors="replace").replace(alias_from, HOME_ALIAS)
+        stdout = user_pattern.sub(USER_ALIAS, stdout)
         stderr = result.stderr.decode("utf-8", errors="replace").replace(alias_from, HOME_ALIAS)
+        stderr = user_pattern.sub(USER_ALIAS, stderr)
         record = {"index": index, **step, "cwd": repo_name, "stdout": stdout, "stderr": stderr, "exit_code": result.returncode, "expected_exit": expected_exit}
         captured.append(record)
         if result.returncode != expected_exit:

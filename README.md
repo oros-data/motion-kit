@@ -4,13 +4,13 @@ Kit para fazer vídeos de motion design com a sua identidade, usando qualquer ag
 
 ## Antes da aula (15 min, com internet boa)
 
-Leia [docs/pre-live.md](docs/pre-live.md). Resumo: Node 22+, ffmpeg, git, python3 e bash (no Windows, WSL2). Depois:
+Leia [docs/pre-live.md](docs/pre-live.md). Resumo: Node 22+, ffmpeg, git, python3 e bash (no Windows, WSL2). Depois, abra https://github.com/oros-data/motion-kit, clique em **Use this template** e em **Create a new repository**, marque **Private** e dê um nome à sua cópia. Mantenha sua cópia privada: ela vai ter sua identidade, logos de clientes e transcrições. Então clone a SUA cópia:
 
 ```bash
-git clone <url-deste-repositorio> motion-kit
+git clone <url-da-sua-copia> motion-kit
 cd motion-kit
 npm ci
-npx hyperframes@0.8.142 browser ensure
+HYPERFRAMES_NO_TELEMETRY=1 HYPERFRAMES_NO_UPDATE_CHECK=1 npx hyperframes@0.8.142 browser ensure
 npm run doctor
 ```
 
@@ -43,9 +43,11 @@ Um vídeo pode usar qualquer combinação de cenas; a cena `terminal` é opciona
 
 `<pasta>` é `examples/primeiro-commit` ou `videos/<slug>`. Opções: `--theme osaka-jade` troca o tema só neste build; `--out arquivo.mp4` no render.
 
+`steps.json` executa comandos na sua máquina: nunca capture um `steps.json` que você não leu.
+
 ## Se algo falhar
 
-- `doctor` reclama do navegador: `npx hyperframes@0.8.142 browser ensure` de novo (baixa ~260 MB).
+- `doctor` reclama do navegador: `HYPERFRAMES_NO_TELEMETRY=1 HYPERFRAMES_NO_UPDATE_CHECK=1 npx hyperframes@0.8.142 browser ensure` de novo (baixa ~260 MB).
 - Render lento: use `npm run preview` para iterar; o render final de 60 s leva cerca de 1 min em CPU de notebook recente, 2 a 3x mais em máquinas antigas.
 - Sem python3 ou bash (Windows sem WSL2): use um `transcript.json` capturado por um colega e pule `capture`.
 - Mais em [docs/render.md](docs/render.md).

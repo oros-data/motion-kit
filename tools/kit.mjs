@@ -10,6 +10,7 @@ const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
 const HF = `hyperframes@${pkg.devDependencies.hyperframes}`;
 const EXAMPLE = 'examples/primeiro-commit';
 process.env.HYPERFRAMES_NO_TELEMETRY = '1';
+process.env.HYPERFRAMES_NO_UPDATE_CHECK = '1';
 
 const [command, ...rest] = process.argv.slice(2);
 const flags = {};
@@ -180,7 +181,7 @@ const commands = {
     const dir = videoDir();
     const result = doBuild(dir);
     const at = flags.at || snapshotTimes(result).join(',');
-    must(hf(['snapshot', buildDir(dir), '--at', at, '--no-browser-gpu', '--no-end']), 'snapshot');
+    must(hf(['snapshot', buildDir(dir), '--at', at, '--no-browser-gpu', '--no-end', '--describe', String(flags.describe || false)]), 'snapshot');
     phoneSheet(buildDir(dir));
   },
 
