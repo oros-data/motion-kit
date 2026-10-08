@@ -3,7 +3,7 @@ import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { build } from './build.mjs';
-import { contrastReport, loadIdentity, validateIdentity } from './identity.mjs';
+import { contrastReport, loadIdentity, textRoles, validateIdentity } from './identity.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
@@ -47,7 +47,7 @@ function videoDir() {
     console.error(`informe a pasta do vídeo, por exemplo: npm run ${command} -- ${candidates[0] ? `videos/${candidates[0]}` : EXAMPLE}`);
     process.exit(2);
   }
-  if (!existsSync(join(root, dir, 'video.json'))) {
+  if (!existsSync(resolve(root, dir, 'video.json'))) {
     console.error(`não achei ${dir}/video.json`);
     process.exit(2);
   }
@@ -55,11 +55,11 @@ function videoDir() {
 }
 
 function buildDir(dir) {
-  return flags.out && command === 'build' ? flags.out : join('build', basename(dir));
+  return join('build', basename(dir) + (flags.theme ? `-${flags.theme}` : ''));
 }
 
 function doBuild(dir, extra = {}) {
-  return build(root, dir, { theme: flags.theme, preview: !!flags.preview, limit: flags.limit ? Number(flags.limit) : undefined, out: flags.out, ...extra });
+  return build(root, dir, { theme: flags.theme, preview: !!flags.preview, limit: flags.limit ? Number(flags.limit) : undefined, out: buildDir(dir), ...extra });
 }
 
 function snapshotTimes(result) {
@@ -138,10 +138,12 @@ const commands = {
       process.exit(1);
     }
     const { theme } = loadIdentity(root, flags.theme);
+    const text = textRoles(identity, theme);
     console.log(`identidade "${identity.name}" (${identity.slug}), tema ${theme.name}, modo ${theme.mode}`);
     console.log(`papéis: ${Object.entries(theme.roles).map(([k, v]) => `${k}=${v}`).join(' ')}`);
+    console.log(`texto por papel: ${Object.entries(text).map(([k, v]) => `${k}=${v}`).join(' ')}`);
     let failed = false;
-    for (const r of contrastReport(theme)) {
+    for (const r of contrastReport(theme, text)) {
       console.log(`${r.status.toUpperCase().padEnd(5)} ${r.label}: ${r.ratio}:1 (mínimo ${r.min}:1) ${r.fg} sobre ${r.bg}`);
       if (r.status === 'fail') failed = true;
     }
@@ -151,9 +153,9 @@ const commands = {
 
   capture() {
     const dir = videoDir();
-    const work = join(root, dir, '.work');
+    const work = resolve(root, dir, '.work');
     mkdirSync(work, { recursive: true });
-    must(sh('python3', [join(root, 'runner', 'capture.py'), join(root, dir, 'steps.json'), join(root, dir, 'transcript.json'), '--work-root', work]), 'captura (precisa de python3 e bash; no Windows use WSL2)');
+    must(sh('python3', [join(root, 'runner', 'capture.py'), resolve(root, dir, 'steps.json'), resolve(root, dir, 'transcript.json'), '--work-root', work]), 'captura (precisa de python3 e bash; no Windows use WSL2)');
   },
 
   build() {

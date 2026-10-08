@@ -1,0 +1,44 @@
+<template>
+  <style>
+    /*__FONTS__*/
+    [data-composition-id="__ID__"] { position: absolute; inset: 0; }
+    [data-composition-id="__ID__"] .fx { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 0 160px 60px; opacity: 0; }
+    [data-composition-id="__ID__"] .words { max-width: 1500px; text-align: center; font-size: 96px; line-height: 1.15; font-weight: 800; color: var(--text); }
+    [data-composition-id="__ID__"] .w { display: inline-block; margin: 0 .18em; opacity: 0; }
+    [data-composition-id="__ID__"] .w.hi { color: var(--concept); text-shadow: 0 0 30px color-mix(in srgb, var(--concept) 45%, transparent); }
+    [data-composition-id="__ID__"] .w.aside { color: var(--aside); }
+    [data-composition-id="__ID__"] .sub { position: absolute; left: 0; right: 0; bottom: 150px; text-align: center; font-family: var(--font-mono); font-size: 28px; color: var(--muted); letter-spacing: 3px; opacity: 0; }
+  </style>
+  <div data-composition-id="__ID__" data-width="1920" data-height="1080">
+    <div class="fx">
+      <div class="words"></div>
+      <div class="sub"></div>
+    </div>
+    <script>
+      (() => {
+        const item = window.KIT.items["__ID__"];
+        const p = item.props;
+        const root = document.querySelector('[data-composition-id="__ID__"]');
+        const $ = (s) => root.querySelector(s);
+        const text = p.text || window.KIT.identity.voice.sample_copy.title;
+        const highlight = (p.highlight || []).map((w) => w.toLowerCase());
+        const aside = (p.aside || []).map((w) => w.toLowerCase());
+        const words = text.split(/\s+/).map((word) => {
+          const clean = word.toLowerCase().replace(/[.,;:!?]/g, "");
+          const w = K.el("span", "w" + (highlight.includes(clean) ? " hi" : aside.includes(clean) ? " aside" : ""), word);
+          $(".words").appendChild(w);
+          return w;
+        });
+        $(".sub").textContent = p.sub || "";
+        const tl = gsap.timeline({ paused: true });
+        K.fade(tl, $(".fx"), item.seconds, 14 / K.fps);
+        const per = Math.min(0.32, Math.max(0.12, (item.seconds - 2.5) / words.length));
+        words.forEach((w, i) => {
+          tl.fromTo(w, { opacity: 0, y: 26, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, duration: 0.42, ease: "power3.out", immediateRender: true }, 0.5 + i * per);
+        });
+        if (p.sub) tl.to($(".sub"), { opacity: 1, duration: 0.5 }, 0.9 + words.length * per);
+        window.__timelines["__ID__"] = tl;
+      })();
+    </script>
+  </div>
+</template>

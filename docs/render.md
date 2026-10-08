@@ -5,7 +5,7 @@
 - `--out caminho.mp4` muda o destino; `--theme nome` troca o tema só nesse build.
 - `--variables '{"debugSafe":true}'` direto no `npx hyperframes@0.8.142 render build/<slug>` pinta a região reservada ao apresentador (canto inferior direito, 356x200).
 
-Tempos medidos nesta máquina (Intel Core Ultra 7 155H, CPU, 2 workers): 3 s do exemplo em 11 s; o exemplo inteiro de 31 s em cerca de 40 s. Máquinas antigas: 2 a 3x mais.
+Tempos medidos (Intel Core Ultra 7 155H, 22 threads, 30 GB, Linux, CPU com `--no-browser-gpu --workers 2`): o exemplo de 31 s (930 quadros) renderiza em 48 s em Tokyo Night e 47 s em Osaka Jade (captura 39 s, codificação 8 s); o `smoke` de 3 s em 11 s. Notebook antigo: 2 a 3x mais; o HyperFrames usa 1 worker sozinho em máquinas com 8 GB ou menos.
 
 ## Se não renderiza
 

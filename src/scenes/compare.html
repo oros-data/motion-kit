@@ -1,0 +1,57 @@
+<template>
+  <style>
+    /*__FONTS__*/
+    [data-composition-id="__ID__"] { position: absolute; inset: 0; }
+    [data-composition-id="__ID__"] .fx { position: absolute; inset: 0; padding: 150px 140px 110px; opacity: 0; }
+    [data-composition-id="__ID__"] .kicker { font-family: var(--font-mono); font-size: 25px; color: var(--aside); letter-spacing: 4px; font-weight: 700; margin-bottom: 20px; }
+    [data-composition-id="__ID__"] h2 { font-size: 64px; line-height: 1.08; font-weight: 800; color: var(--concept); }
+    [data-composition-id="__ID__"] .cols { display: flex; gap: 40px; margin-top: 56px; align-items: stretch; }
+    [data-composition-id="__ID__"] .col { flex: 1; border: 2px solid; border-radius: 18px; padding: 34px 38px; background: color-mix(in srgb, var(--surface) 85%, var(--bg)); opacity: 0; min-height: 420px; }
+    [data-composition-id="__ID__"] .col .t { font-size: 36px; font-weight: 800; letter-spacing: 1px; margin-bottom: 26px; }
+    [data-composition-id="__ID__"] .col li { font-size: 30px; line-height: 1.4; color: var(--text); list-style: none; padding-left: 36px; position: relative; margin-top: 14px; opacity: 0; }
+    [data-composition-id="__ID__"] .col li::before { content: "·"; position: absolute; left: 6px; font-weight: 800; }
+    [data-composition-id="__ID__"] .vs { align-self: center; font-family: var(--font-mono); font-size: 30px; color: var(--muted); letter-spacing: 3px; }
+    [data-composition-id="__ID__"] .foot { font-size: 30px; color: var(--muted); margin-top: 40px; text-align: center; }
+  </style>
+  <div data-composition-id="__ID__" data-width="1920" data-height="1080">
+    <div class="fx">
+      <div class="kicker"></div>
+      <h2></h2>
+      <div class="cols"></div>
+      <div class="foot"></div>
+    </div>
+    <script>
+      (() => {
+        const item = window.KIT.items["__ID__"];
+        const p = item.props;
+        const root = document.querySelector('[data-composition-id="__ID__"]');
+        const $ = (s) => root.querySelector(s);
+        $(".kicker").textContent = p.kicker || "";
+        $("h2").textContent = p.headline || "";
+        $(".foot").textContent = p.footer || "";
+        const sides = [p.left || {}, p.right || {}];
+        const cols = sides.map((side, i) => {
+          if (i === 1) $(".cols").appendChild(K.el("div", "vs", p.vs === undefined ? "VS" : p.vs));
+          const role = side.role || (i === 0 ? "aside" : "concept");
+          const col = K.el("div", "col");
+          col.style.borderColor = `var(--${role})`;
+          const t = K.el("div", "t", side.title || "");
+          t.style.color = `var(--${role})`;
+          col.appendChild(t);
+          const ul = K.el("ul");
+          (side.items || []).forEach((text) => { const li = K.el("li", "", text); li.style.setProperty("--b", `var(--${role})`); ul.appendChild(li); });
+          col.appendChild(ul);
+          $(".cols").appendChild(col);
+          return col;
+        });
+        const tl = gsap.timeline({ paused: true });
+        K.fade(tl, $(".fx"), item.seconds, 18 / K.fps);
+        cols.forEach((col, i) => {
+          tl.fromTo(col, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out", immediateRender: true }, 1.2 + i * 0.8);
+          [...col.querySelectorAll("li")].forEach((li, j) => tl.to(li, { opacity: 1, duration: 0.3 }, 2.0 + i * 0.8 + j * 0.45));
+        });
+        window.__timelines["__ID__"] = tl;
+      })();
+    </script>
+  </div>
+</template>

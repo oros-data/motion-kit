@@ -46,6 +46,23 @@ export function readableMuted(foreground, background, surface) {
   return foreground;
 }
 
+export const TEXT_MIN = 5.5;
+
+export function readableText(color, text, background, surface) {
+  for (let weight = 0; weight <= 1.0001; weight += 0.05) {
+    const candidate = mix(text, color, weight);
+    if (contrast(candidate, background) >= TEXT_MIN && contrast(candidate, surface) >= 4.5) return candidate;
+  }
+  return text;
+}
+
+export function textRoles(identity, theme) {
+  const r = theme.roles;
+  const out = {};
+  for (const [role, color] of Object.entries(identity.roles)) out[role] = readableText(r[color], r.text, r.background, r.surface);
+  return out;
+}
+
 export function loadTheme(root, name) {
   const dir = join(root, 'themes', name);
   const colorsFile = join(dir, 'colors.toml');
@@ -86,9 +103,10 @@ export function loadTheme(root, name) {
   };
 }
 
-export function contrastReport(theme) {
+export function contrastReport(theme, text = {}) {
   const r = theme.roles, t = theme.terminal;
   const rows = [
+    ...Object.entries(text).map(([role, color]) => [`${role} (texto) on background`, color, r.background, TEXT_MIN, 'fail']),
     ['text on background', r.text, r.background, 4.5, 'fail'],
     ['text on surface', r.text, r.surface, 4.5, 'fail'],
     ['terminal foreground on terminal background', t.foreground, t.background, 4.5, 'fail'],
@@ -163,7 +181,7 @@ export function cssVariables(identity, theme) {
   const vars = {
     bg: r.background, surface: r.surface, primary: r.primary, secondary: r.secondary, muted: r.muted, text: r.text, danger: r.danger,
     line: theme.line, 'term-bg': t.background, 'term-fg': t.foreground, 'term-cursor': t.cursor, 'term-selection': t.selection,
-    concept: r[identity.roles.concept], aside: r[identity.roles.aside], base: r[identity.roles.base], error: r[identity.roles.error],
+    ...textRoles(identity, theme),
     'font-display': `"${identity.fonts.display.family}", sans-serif`,
     'font-mono': `"${identity.fonts.mono.family}", monospace`,
   };

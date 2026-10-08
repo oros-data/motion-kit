@@ -28,7 +28,7 @@
     [data-composition-id="__ID__"] .foot .ex { position: absolute; right: 0; top: 0; opacity: 0; }
     [data-composition-id="__ID__"] .diag { position: absolute; left: 1408px; top: 120px; width: 440px; height: 410px; font-family: var(--font-mono); }
     [data-composition-id="__ID__"] .box { position: absolute; left: 0; width: 440px; height: 120px; border: 2px solid; border-radius: 14px; background: color-mix(in srgb, var(--bg) 90%, transparent); padding: 15px 19px; font-size: 22px; letter-spacing: 1.5px; font-weight: 700; }
-    [data-composition-id="__ID__"] .chip { position: absolute; width: 130px; height: 43px; border: 2px solid; border-radius: 8px; background: var(--surface); font-size: 18px; font-weight: 700; display: flex; align-items: center; justify-content: center; opacity: 0; white-space: nowrap; }
+    [data-composition-id="__ID__"] .chip { position: absolute; min-width: 130px; padding: 0 12px; height: 43px; border: 2px solid; border-radius: 8px; background: var(--surface); font-size: 18px; font-weight: 700; display: flex; align-items: center; justify-content: center; opacity: 0; white-space: nowrap; }
     [data-composition-id="__ID__"] .arrow { position: absolute; font-size: 30px; opacity: 0; width: 30px; text-align: center; }
     [data-composition-id="__ID__"] .node { position: absolute; left: 28px; width: 382px; height: 55px; border-radius: 28px; border: 3px solid; background: var(--surface); display: flex; align-items: center; justify-content: center; font-size: 21px; font-weight: 700; opacity: 0; white-space: nowrap; overflow: hidden; }
     [data-composition-id="__ID__"] .callout { position: absolute; left: 1408px; top: 560px; width: 440px; min-height: 190px; border-left: 5px solid var(--concept); padding: 22px 0 20px 28px; background: linear-gradient(90deg, color-mix(in srgb, var(--concept) 12%, transparent), transparent); }
@@ -79,7 +79,7 @@
         const chip = (name, place, role, straddle) => {
           const c = el("div", "chip", name);
           const k = counts[place]++;
-          c.style.left = `${18 + (k % 3) * 142}px`;
+          if (straddle) { c.style.right = "14px"; counts[place]--; } else c.style.left = `${18 + (k % 3) * 142}px`;
           c.style.top = `${placeTop(place) + (straddle ? 94 : 54)}px`;
           c.style.color = `var(--${role})`;
           c.style.borderColor = `var(--${role})`;
