@@ -10,6 +10,7 @@ const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
 const HF = `hyperframes@${pkg.devDependencies.hyperframes}`;
 const EXAMPLE = 'examples/primeiro-commit';
 process.env.HYPERFRAMES_NO_TELEMETRY = '1';
+process.env.HYPERFRAMES_NO_UPDATE_CHECK = '1';
 
 const [command, ...rest] = process.argv.slice(2);
 const flags = {};

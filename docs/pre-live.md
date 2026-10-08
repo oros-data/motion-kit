@@ -22,11 +22,13 @@ Qualquer um: Claude Code, Codex, Gemini CLI, Cursor, Copilot, OpenCode. O reposi
 
 ## 3. O repositório
 
+Abra https://github.com/oros-data/motion-kit, clique em **Use this template** e em **Create a new repository**, marque **Private** e dê um nome à sua cópia. Depois clone a SUA cópia:
+
 ```bash
-git clone <url> motion-kit
+git clone <url-da-sua-copia> motion-kit
 cd motion-kit
 npm ci
-npx hyperframes@0.8.142 browser ensure
+HYPERFRAMES_NO_TELEMETRY=1 HYPERFRAMES_NO_UPDATE_CHECK=1 npx hyperframes@0.8.142 browser ensure
 npm run doctor
 npm run smoke
 ```
