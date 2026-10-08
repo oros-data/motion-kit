@@ -46,14 +46,39 @@ export function readableMuted(foreground, background, surface) {
   return foreground;
 }
 
+export function readableOn(color, towards, backgrounds, min) {
+  for (let weight = 0; weight <= 1.0001; weight += 0.05) {
+    const candidate = mix(towards, color, weight);
+    if (backgrounds.every(([bg, need]) => contrast(candidate, bg) >= (need || min))) return candidate;
+  }
+  return towards;
+}
+
+function terminalPalette(c, ansi) {
+  let background = c.dark_background, surface = c.lighter_background, foreground = c.foreground, bright = c.bright_foreground, line = c.muted;
+  if (luminance(background) > 0.18) {
+    background = mix(c.background, '#000000', 0.12);
+    surface = mix(c.background, '#000000', 0.22);
+    foreground = mix(c.background, '#ffffff', 0.12);
+    bright = '#ffffff';
+    line = mix(c.background, '#000000', 0.35);
+    Object.assign(ansi, { 30: background, 37: foreground, 97: bright });
+  }
+  const on = [[background, 5.5], [surface, 4.5]];
+  const muted = readableMuted(foreground, background, surface);
+  ansi[90] = muted;
+  return {
+    background, surface, foreground, line, cursor: bright, selection: c.selection, ansi, muted,
+    accent: readableOn(c.accent, bright, on, 5.5),
+    prompt: readableOn(c.magenta, bright, on, 5.5),
+    error: readableOn(c.red, bright, [[background, 4.5], [surface, 4.5]], 4.5),
+  };
+}
+
 export const TEXT_MIN = 5.5;
 
 export function readableText(color, text, background, surface) {
-  for (let weight = 0; weight <= 1.0001; weight += 0.05) {
-    const candidate = mix(text, color, weight);
-    if (contrast(candidate, background) >= TEXT_MIN && contrast(candidate, surface) >= 4.5) return candidate;
-  }
-  return text;
+  return readableOn(color, text, [[background, TEXT_MIN], [surface, 4.5]], TEXT_MIN);
 }
 
 export function textRoles(identity, theme) {
@@ -92,14 +117,7 @@ export function loadTheme(root, name) {
     mode: c.mode || 'dark',
     roles,
     line: c.muted,
-    terminal: {
-      background: c.dark_background,
-      foreground: c.foreground,
-      cursor: c.bright_foreground,
-      selection: c.selection,
-      ansi,
-      ...(overrides.terminal || {}),
-    },
+    terminal: { ...terminalPalette(c, ansi), ...(overrides.terminal || {}) },
   };
 }
 
@@ -110,6 +128,12 @@ export function contrastReport(theme, text = {}) {
     ['text on background', r.text, r.background, 4.5, 'fail'],
     ['text on surface', r.text, r.surface, 4.5, 'fail'],
     ['terminal foreground on terminal background', t.foreground, t.background, 4.5, 'fail'],
+    ['terminal foreground on terminal bar', t.foreground, t.surface, 4.5, 'fail'],
+    ['terminal muted on terminal background', t.muted, t.background, 4.5, 'fail'],
+    ['terminal muted on terminal bar', t.muted, t.surface, 4.5, 'fail'],
+    ['terminal prompt on terminal background', t.prompt, t.background, 5.5, 'fail'],
+    ['terminal accent on terminal background', t.accent, t.background, 5.5, 'fail'],
+    ['terminal error on terminal background', t.error, t.background, 4.5, 'fail'],
     ['muted on background', r.muted, r.background, 4.5, 'fail'],
     ['muted on surface', r.muted, r.surface, 4.5, 'warn'],
     ['primary on background', r.primary, r.background, 3, 'warn'],
@@ -180,7 +204,8 @@ export function cssVariables(identity, theme) {
   const r = theme.roles, t = theme.terminal;
   const vars = {
     bg: r.background, surface: r.surface, primary: r.primary, secondary: r.secondary, muted: r.muted, text: r.text, danger: r.danger,
-    line: theme.line, 'term-bg': t.background, 'term-fg': t.foreground, 'term-cursor': t.cursor, 'term-selection': t.selection,
+    line: theme.line, 'term-bg': t.background, 'term-surface': t.surface, 'term-fg': t.foreground, 'term-cursor': t.cursor, 'term-selection': t.selection,
+    'term-line': t.line, 'term-muted': t.muted, 'term-accent': t.accent, 'term-prompt': t.prompt, 'term-error': t.error,
     ...textRoles(identity, theme),
     'font-display': `"${identity.fonts.display.family}", sans-serif`,
     'font-mono': `"${identity.fonts.mono.family}", monospace`,
