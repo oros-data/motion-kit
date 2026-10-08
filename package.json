@@ -1,0 +1,21 @@
+{
+  "name": "motion-kit",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "doctor": "node tools/kit.mjs doctor",
+    "identity:check": "node tools/kit.mjs identity:check",
+    "capture": "node tools/kit.mjs capture",
+    "build": "node tools/kit.mjs build",
+    "dev": "node tools/kit.mjs dev",
+    "snapshot": "node tools/kit.mjs snapshot",
+    "check": "node tools/kit.mjs check",
+    "render": "node tools/kit.mjs render",
+    "preview": "node tools/kit.mjs preview",
+    "smoke": "node tools/kit.mjs smoke"
+  },
+  "devDependencies": {
+    "hyperframes": "0.8.142"
+  }
+}

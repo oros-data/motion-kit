@@ -1,0 +1,40 @@
+<template>
+  <style>
+    /*__FONTS__*/
+    [data-composition-id="__ID__"] { position: absolute; inset: 0; }
+    [data-composition-id="__ID__"] .fx { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; opacity: 0; padding: 0 200px 60px; }
+    [data-composition-id="__ID__"] .logo { color: var(--primary); margin-bottom: 40px; }
+    [data-composition-id="__ID__"] .kicker { font-family: var(--font-mono); font-size: 27px; color: var(--aside); letter-spacing: 5px; font-weight: 700; }
+    [data-composition-id="__ID__"] .l { font-size: 72px; line-height: 1.15; color: var(--concept); font-weight: 800; }
+    [data-composition-id="__ID__"] .l.first { margin-top: 30px; }
+    [data-composition-id="__ID__"] .rule { width: 980px; height: 2px; background: var(--line); margin-top: 52px; }
+    [data-composition-id="__ID__"] .next { font-size: 38px; color: var(--text); margin-top: 44px; }
+    [data-composition-id="__ID__"] .tagline { position: absolute; left: 0; right: 0; bottom: 70px; font-family: var(--font-mono); font-size: 24px; color: var(--muted); letter-spacing: 2px; }
+  </style>
+  <div data-composition-id="__ID__" data-width="1920" data-height="1080">
+    <div class="fx">
+      <div class="kicker"></div>
+      <div class="lines"></div>
+      <div class="rule"></div>
+      <div class="next"></div>
+      <div class="tagline"></div>
+    </div>
+    <script>
+      (() => {
+        const item = window.KIT.items["__ID__"];
+        const p = item.props;
+        const root = document.querySelector('[data-composition-id="__ID__"]');
+        const $ = (s) => root.querySelector(s);
+        if (p.logo !== false) $(".fx").prepend(K.logo(110));
+        $(".kicker").textContent = p.kicker || "";
+        $(".next").textContent = p.next || "";
+        $(".tagline").textContent = p.tagline === undefined ? window.KIT.identity.voice.tagline : p.tagline;
+        (p.lines || []).forEach((line, i) => $(".lines").appendChild(K.el("div", "l" + (i === 0 ? " first" : ""), line)));
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo($(".fx"), { opacity: 0 }, { opacity: 1, duration: 22 / K.fps, ease: "none", immediateRender: true }, 0);
+        tl.fromTo($(".lines"), { y: 24 }, { y: 0, duration: 0.8, ease: "power3.out", immediateRender: true }, 0.2);
+        window.__timelines["__ID__"] = tl;
+      })();
+    </script>
+  </div>
+</template>

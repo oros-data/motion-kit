@@ -1,0 +1,232 @@
+<template>
+  <style>
+    /*__FONTS__*/
+    [data-composition-id="__ID__"] { position: absolute; inset: 0; }
+    [data-composition-id="__ID__"] .fx { position: absolute; inset: 0; opacity: 0; }
+    [data-composition-id="__ID__"] .win { position: absolute; left: 70px; top: 125px; width: 1300px; height: 815px; border: 3px solid var(--line); border-radius: 18px; background: var(--term-bg); overflow: hidden; box-shadow: 0 0 44px color-mix(in srgb, var(--primary) 14%, transparent), inset 0 0 45px rgba(0,0,0,.4); font-family: var(--font-mono); font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+    [data-composition-id="__ID__"] .bar { height: 68px; border-bottom: 2px solid var(--line); display: flex; align-items: center; padding: 0 28px; gap: 13px; background: var(--surface); }
+    [data-composition-id="__ID__"] .dot { width: 15px; height: 15px; border-radius: 50%; }
+    [data-composition-id="__ID__"] .wt { margin-left: 18px; color: var(--muted); font-size: 23px; }
+    [data-composition-id="__ID__"] .wg { margin-left: auto; color: var(--aside); font-size: 20px; }
+    [data-composition-id="__ID__"] .steps { position: absolute; left: 0; right: 0; top: 68px; bottom: 46px; }
+    [data-composition-id="__ID__"] .step { position: absolute; inset: 0; padding: 32px 42px; font-size: 35px; line-height: 1.23; opacity: 0; }
+    [data-composition-id="__ID__"] .prev { display: flex; font-size: 25px; line-height: 1.4; color: var(--muted); opacity: .55; margin-bottom: 28px; white-space: nowrap; overflow: hidden; }
+    [data-composition-id="__ID__"] .prev .cmd { overflow: hidden; text-overflow: ellipsis; }
+    [data-composition-id="__ID__"] .prev .ex { margin-left: auto; padding-left: 20px; }
+    [data-composition-id="__ID__"] .no { font-size: 24px; color: var(--muted); margin-bottom: 20px; }
+    [data-composition-id="__ID__"] .cmdrow { font-size: 38px; color: var(--term-fg); white-space: pre-wrap; overflow-wrap: anywhere; min-height: 47px; font-weight: 700; }
+    [data-composition-id="__ID__"] .cmdrow .p { color: var(--aside); }
+    [data-composition-id="__ID__"] .cmdrow .c { opacity: 0; }
+    [data-composition-id="__ID__"] .cmdrow .cur { display: inline-block; width: 0; overflow: visible; opacity: 0; color: var(--term-cursor); }
+    [data-composition-id="__ID__"] .out { margin-top: 30px; font-size: 32px; line-height: 43px; font-weight: 700; }
+    [data-composition-id="__ID__"] .ol { min-height: 43px; white-space: pre-wrap; overflow-wrap: anywhere; border-left: 5px solid transparent; margin-left: -18px; padding-left: 13px; color: var(--term-fg); opacity: 0; }
+    [data-composition-id="__ID__"] .ol.err { color: var(--error); }
+    [data-composition-id="__ID__"] .ol.hl { background: var(--term-selection); border-left-color: var(--primary); }
+    [data-composition-id="__ID__"] .none { font-size: 25px; color: var(--muted); opacity: 0; }
+    [data-composition-id="__ID__"] .foot { position: absolute; bottom: 0; left: 0; right: 0; height: 46px; border-top: 1px solid var(--line); padding: 10px 22px; font-size: 20px; color: var(--muted); display: flex; justify-content: space-between; }
+    [data-composition-id="__ID__"] .foot .exs { position: relative; width: 120px; text-align: right; }
+    [data-composition-id="__ID__"] .foot .ex { position: absolute; right: 0; top: 0; opacity: 0; }
+    [data-composition-id="__ID__"] .diag { position: absolute; left: 1408px; top: 120px; width: 440px; height: 410px; font-family: var(--font-mono); }
+    [data-composition-id="__ID__"] .box { position: absolute; left: 0; width: 440px; height: 120px; border: 2px solid; border-radius: 14px; background: color-mix(in srgb, var(--bg) 90%, transparent); padding: 15px 19px; font-size: 22px; letter-spacing: 1.5px; font-weight: 700; }
+    [data-composition-id="__ID__"] .chip { position: absolute; width: 130px; height: 43px; border: 2px solid; border-radius: 8px; background: var(--surface); font-size: 18px; font-weight: 700; display: flex; align-items: center; justify-content: center; opacity: 0; white-space: nowrap; }
+    [data-composition-id="__ID__"] .arrow { position: absolute; font-size: 30px; opacity: 0; width: 30px; text-align: center; }
+    [data-composition-id="__ID__"] .node { position: absolute; left: 28px; width: 382px; height: 55px; border-radius: 28px; border: 3px solid; background: var(--surface); display: flex; align-items: center; justify-content: center; font-size: 21px; font-weight: 700; opacity: 0; white-space: nowrap; overflow: hidden; }
+    [data-composition-id="__ID__"] .callout { position: absolute; left: 1408px; top: 560px; width: 440px; min-height: 190px; border-left: 5px solid var(--concept); padding: 22px 0 20px 28px; background: linear-gradient(90deg, color-mix(in srgb, var(--concept) 12%, transparent), transparent); }
+    [data-composition-id="__ID__"] .cb { position: absolute; left: 28px; right: 0; top: 22px; opacity: 0; }
+    [data-composition-id="__ID__"] .cb .a { font-size: 30px; line-height: 1.25; font-weight: 800; color: var(--concept); }
+    [data-composition-id="__ID__"] .cb .b { font-size: 25px; line-height: 1.4; color: var(--text); margin-top: 18px; }
+  </style>
+  <div data-composition-id="__ID__" data-width="1920" data-height="1080">
+    <div class="fx">
+      <div class="win">
+        <div class="bar"><i class="dot" style="background:var(--danger)"></i><i class="dot" style="background:var(--primary)"></i><i class="dot" style="background:var(--secondary)"></i><span class="wt"></span><span class="wg"></span></div>
+        <div class="steps"></div>
+        <div class="foot"><span class="ft"></span><span class="exs"></span></div>
+      </div>
+      <div class="diag"></div>
+      <div class="callout"></div>
+    </div>
+    <script>
+      (() => {
+        const item = window.KIT.items["__ID__"];
+        const p = item.props;
+        const labels = Object.assign({ step: "PASSO", exit: "exit", no_output: "sem saída", tag: "CAPTURA REAL", footer: "saída real, cores ANSI preservadas" }, p.labels || {});
+        const root = document.querySelector('[data-composition-id="__ID__"]');
+        const $ = (s) => root.querySelector(s);
+        const el = K.el;
+        const f = K.f;
+        const tl = gsap.timeline({ paused: true });
+        K.fade(tl, $(".fx"), item.seconds, 14 / K.fps);
+
+        $(".wt").textContent = p.window_title || `${item.repo} — bash`;
+        $(".wg").textContent = labels.tag;
+        $(".ft").textContent = labels.footer;
+        const prompt = p.prompt || "$ ";
+
+        const diag = $(".diag");
+        const places = p.places || [];
+        const roleOf = (place, i) => place.role || (i % 2 === 0 ? "aside" : "concept");
+        const placeTop = (i) => i * 145;
+        places.forEach((place, i) => {
+          const b = el("div", "box", place.label);
+          b.style.top = `${placeTop(i)}px`;
+          b.style.color = `var(--${roleOf(place, i)})`;
+          b.style.borderColor = `var(--${roleOf(place, i)})`;
+          diag.appendChild(b);
+        });
+        const chips = {};
+        const counts = places.map(() => 0);
+        const chip = (name, place, role, straddle) => {
+          const c = el("div", "chip", name);
+          const k = counts[place]++;
+          c.style.left = `${18 + (k % 3) * 142}px`;
+          c.style.top = `${placeTop(place) + (straddle ? 94 : 54)}px`;
+          c.style.color = `var(--${role})`;
+          c.style.borderColor = `var(--${role})`;
+          c.style.boxShadow = `0 0 14px color-mix(in srgb, var(--${role}) 20%, transparent)`;
+          if (straddle) c.setAttribute("data-layout-allow-overlap", "");
+          diag.appendChild(c);
+          return c;
+        };
+        const arrow = (place, role) => {
+          const a = el("div", "arrow", "↓");
+          a.style.left = "205px";
+          a.style.top = `${placeTop(place) + 111}px`;
+          a.style.color = `var(--${role})`;
+          diag.appendChild(a);
+          return a;
+        };
+        const show = (target, at, to = 1) => tl.to(target, { opacity: to, duration: 0.3, ease: "power1.out" }, at);
+        const progressS = (D) => Math.min(D * 0.55, 70 / K.fps);
+        const ops = {
+          chip: (op, at) => {
+            const role = op.role || roleOf(places[op.place || 0], op.place || 0);
+            const tagged = op.tag ? `${op.file} · ${op.tag}` : op.file;
+            chips[op.file] = chip(tagged, op.place || 0, role, op.role === "error" || op.role === "danger");
+            show(chips[op.file], at, op.tag ? 0.82 : 1);
+          },
+          stage: (op, at, D) => {
+            const from = op.from || 0, to = op.to || 1;
+            const role = roleOf(places[to], to);
+            const copies = op.files.map((file) => {
+              const c = chip(file, from, role, false);
+              const original = chips[file];
+              if (original) { c.style.left = original.style.left; counts[from]--; }
+              c.setAttribute("data-layout-allow-overlap", "");
+              chips[`${file}@${to}`] = c;
+              return c;
+            });
+            const a = arrow(from, role);
+            chips[`arrow@${from}`] = a;
+            tl.set(copies, { opacity: 1 }, at);
+            tl.fromTo(copies, { y: 0 }, { y: (to - from) * 145, duration: progressS(D), ease: "power2.inOut", immediateRender: false }, at);
+            tl.to(a, { opacity: 1, duration: 0.3 }, at);
+          },
+          commit: (op, at, D, step) => {
+            const from = op.from || 1, to = op.to || 2;
+            const role = roleOf(places[to], to);
+            const match = step.stdout.match(/\[[^\]]*?\s([0-9a-f]{7,40})\]/);
+            const hash = op.hash || (match ? match[1] : "");
+            const node = el("div", "node", `● ${hash} · ${op.label || ""}`.replace(/ · $/, ""));
+            node.style.top = `${placeTop(to) + 52}px`;
+            node.style.color = `var(--${role})`;
+            node.style.borderColor = `var(--${role})`;
+            diag.appendChild(node);
+            const staged = Object.keys(chips).filter((k) => k.endsWith(`@${from}`) || k === `arrow@${from - 1}`).map((k) => chips[k]);
+            const originals = (op.files || Object.keys(chips).filter((k) => !k.includes("@"))).map((k) => chips[k]).filter(Boolean);
+            if (staged.length) tl.to(staged, { opacity: 0, duration: 0.35, ease: "power1.in" }, at);
+            if (originals.length) tl.to(originals, { opacity: 0.34, duration: 0.5 }, at);
+            tl.to(arrow(from, role), { opacity: 1, duration: progressS(D), ease: "none" }, at);
+            tl.fromTo(node, { opacity: 0, scale: 0.88 }, { opacity: 1, scale: 1, duration: progressS(D), ease: "power2.out", immediateRender: false }, at);
+          },
+        };
+
+        const steps = item.steps;
+        const calloutBox = $(".callout");
+        const stepsHost = $(".steps");
+        const exHost = $(".foot .exs");
+        const win = $(".win");
+
+        steps.forEach((step, index) => {
+          const start = step.start;
+          const D = step.wait;
+          const node = el("div", "step");
+          const prev = index > 0 ? steps[index - 1] : null;
+          if (prev) {
+            const pr = el("div", "prev");
+            const cmd = el("span", "cmd");
+            cmd.append(el("span", "prompt", prompt), document.createTextNode(prev.command));
+            pr.append(cmd, el("span", "ex", `${labels.exit} ${prev.exit_code}`));
+            node.appendChild(pr);
+          }
+          node.appendChild(el("div", "no", `${labels.step} ${String(index + 1).padStart(2, "0")} / ${String(steps.length).padStart(2, "0")}`));
+
+          const row = el("div", "cmdrow");
+          row.appendChild(el("span", "p", prompt));
+          const cursors = [];
+          const mkCursor = () => { const c = el("span", "cur", "▌"); cursors.push(c); row.appendChild(c); };
+          mkCursor();
+          const chars = [...step.command].map((ch) => { const s = el("span", "c", ch); row.appendChild(s); mkCursor(); return s; });
+          node.appendChild(row);
+
+          const out = el("div", "out");
+          const lines = K.lines(step);
+          const lineEls = lines.map(({ line, error }) => {
+            const ol = el("div", "ol" + (error ? " err" : "") + (step.highlight && K.plain(line).includes(step.highlight) ? " hl" : ""));
+            K.ansi(line).forEach((piece) => {
+              const span = el("span", "", piece.text);
+              if (!error && piece.color) span.style.color = piece.color;
+              if (!piece.bold) span.style.fontWeight = "400";
+              ol.appendChild(span);
+            });
+            out.appendChild(ol);
+            return ol;
+          });
+          let none = null;
+          if (!lines.length) { none = el("div", "none", `↳ ${labels.no_output} · ${labels.exit} ${step.exit_code}`); out.appendChild(none); }
+          node.appendChild(out);
+          stepsHost.appendChild(node);
+
+          const exit = el("span", "ex", `${labels.exit} ${step.exit_code}`);
+          exit.style.color = step.exit_code === 0 ? "var(--aside)" : "var(--error)";
+          exHost.appendChild(exit);
+
+          const cb = el("div", "cb");
+          cb.appendChild(el("div", "a", step.callout || ""));
+          if (step.subcallout) cb.appendChild(el("div", "b", step.subcallout));
+          calloutBox.appendChild(cb);
+
+          tl.set([node, exit], { opacity: 1 }, start);
+          if (index < steps.length - 1) tl.set([node, exit], { opacity: 0 }, start + D);
+          tl.fromTo(cb, { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "power1.out", immediateRender: false }, start);
+          if (index < steps.length - 1) tl.set(cb, { opacity: 0 }, start + D);
+
+          const len = step.command.length;
+          const cmdFrames = Math.round(Math.min(3.4, Math.max(1.3, len * 0.052)) * K.fps);
+          tl.set(cursors[0], { opacity: 1 }, start);
+          chars.forEach((c, k) => {
+            const at = start + f(12 + ((cmdFrames - 12) * (k + 1)) / len);
+            tl.set(c, { opacity: 1 }, at);
+            tl.set(cursors[k], { opacity: 0 }, at);
+            tl.set(cursors[k + 1], { opacity: 1 }, at);
+          });
+          const last = cursors[len];
+          for (let fr = Math.ceil(cmdFrames / 15) * 15; fr < D * K.fps; fr += 15) {
+            tl.set(last, { opacity: Math.floor(fr / 15) % 2 === 0 ? 1 : 0 }, start + f(fr));
+          }
+          tl.set(last, { opacity: Math.floor(cmdFrames / 15) % 2 === 0 ? 1 : 0 }, start + f(cmdFrames));
+
+          const outStart = cmdFrames + 17;
+          lineEls.forEach((ol, j) => tl.set(ol, { opacity: 1 }, start + f(outStart + 10 * j)));
+          if (none) tl.set(none, { opacity: 1 }, start + f(outStart));
+
+          tl.fromTo(win, { scale: 1 }, { scale: 1.008, duration: D / 2, ease: "sine.inOut", immediateRender: false }, start);
+          tl.to(win, { scale: 1, duration: D / 2, ease: "sine.inOut" }, start + D / 2);
+
+          (step.diagram || []).forEach((op) => ops[op.op] && ops[op.op](op, start + f(outStart) + 0.2, D, step));
+        });
+        window.__timelines["__ID__"] = tl;
+      })();
+    </script>
+  </div>
+</template>

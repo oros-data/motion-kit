@@ -1,0 +1,12 @@
+node_modules/
+build/
+renders/
+snapshots/
+.hyperframes/
+.thumbnails/
+videos/*/.work/
+examples/*/.work/
+*.mp4
+*.mov
+*.webm
+*.log

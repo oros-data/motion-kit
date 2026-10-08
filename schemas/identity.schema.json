@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Identidade do kit de motion design",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "slug", "language", "theme", "colors", "roles", "fonts", "logo", "voice", "canvas", "mode"],
+  "properties": {
+    "name": { "type": "string", "minLength": 1 },
+    "slug": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
+    "language": { "type": "string", "pattern": "^[a-z]{2}(-[A-Z]{2})?$" },
+    "theme": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
+    "colors": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "background": { "$ref": "#/$defs/hex" },
+        "surface": { "$ref": "#/$defs/hex" },
+        "primary": { "$ref": "#/$defs/hex" },
+        "secondary": { "$ref": "#/$defs/hex" },
+        "muted": { "$ref": "#/$defs/hex" },
+        "text": { "$ref": "#/$defs/hex" },
+        "danger": { "$ref": "#/$defs/hex" }
+      }
+    },
+    "roles": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["concept", "aside", "base", "error"],
+      "properties": {
+        "concept": { "$ref": "#/$defs/role" },
+        "aside": { "$ref": "#/$defs/role" },
+        "base": { "$ref": "#/$defs/role" },
+        "error": { "$ref": "#/$defs/role" }
+      }
+    },
+    "fonts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["display", "mono"],
+      "properties": {
+        "display": { "$ref": "#/$defs/font" },
+        "mono": { "$ref": "#/$defs/font" }
+      }
+    },
+    "logo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["file", "on"],
+      "properties": {
+        "file": { "type": "string", "pattern": "\\.svg$" },
+        "min_height_px": { "type": "integer", "minimum": 24 },
+        "clearspace_px": { "type": "integer", "minimum": 0 },
+        "on": { "type": "string", "enum": ["dark", "light"] }
+      }
+    },
+    "voice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tone", "tagline", "sample_copy"],
+      "properties": {
+        "tone": { "type": "array", "minItems": 1, "maxItems": 5, "items": { "type": "string" } },
+        "tagline": { "type": "string" },
+        "sample_copy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["title", "caption"],
+          "properties": {
+            "title": { "type": "string" },
+            "caption": { "type": "string" }
+          }
+        }
+      }
+    },
+    "canvas": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["width", "height", "fps"],
+      "properties": {
+        "width": { "type": "integer", "enum": [1920] },
+        "height": { "type": "integer", "enum": [1080] },
+        "fps": { "type": "integer", "enum": [24, 25, 30, 60] }
+      }
+    },
+    "mode": { "type": "string", "enum": ["dark", "light"] }
+  },
+  "$defs": {
+    "hex": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" },
+    "role": { "type": "string", "enum": ["primary", "secondary", "muted", "text", "danger"] },
+    "font": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["family", "files"],
+      "properties": {
+        "family": { "type": "string", "minLength": 1 },
+        "files": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "weight"],
+            "properties": {
+              "path": { "type": "string", "pattern": "\\.(ttf|otf|woff2)$" },
+              "weight": { "type": "string", "pattern": "^[1-9]00( [1-9]00)?$" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

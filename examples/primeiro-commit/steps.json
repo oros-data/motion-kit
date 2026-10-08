@@ -1,0 +1,37 @@
+{
+  "repo_name": "diario",
+  "terminal_columns": 60,
+  "steps": [
+    {
+      "id": "init",
+      "command": "git init -b main",
+      "wait": 6,
+      "callout": "Git começa local.",
+      "subcallout": "Nada foi publicado ainda.",
+      "highlight": "Initialized empty Git repository"
+    },
+    {
+      "id": "readme",
+      "command": "printf '# Diário\\n' > README.md",
+      "wait": 4,
+      "callout": "Um arquivo nasce na pasta.",
+      "diagram": [{ "op": "chip", "file": "README.md" }]
+    },
+    {
+      "id": "add",
+      "command": "git add README.md",
+      "wait": 5,
+      "callout": "ADD ESCOLHE O PRÓXIMO SNAPSHOT",
+      "subcallout": "Só o arquivo escolhido vai para o stage.",
+      "diagram": [{ "op": "stage", "files": ["README.md"] }]
+    },
+    {
+      "id": "status",
+      "command": "git status --short",
+      "wait": 6,
+      "callout": "A À ESQUERDA = PREPARADO",
+      "subcallout": "O stage é separado da pasta de trabalho.",
+      "highlight": "A  README.md"
+    }
+  ]
+}

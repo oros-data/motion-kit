@@ -1,0 +1,42 @@
+{
+  "name": "Minha Marca",
+  "slug": "minha-marca",
+  "language": "pt-BR",
+  "theme": "tokyo-night",
+  "colors": {},
+  "roles": {
+    "concept": "primary",
+    "aside": "secondary",
+    "base": "muted",
+    "error": "danger"
+  },
+  "fonts": {
+    "display": {
+      "family": "Inter",
+      "files": [{ "path": "src/fonts/Inter.ttf", "weight": "100 900" }]
+    },
+    "mono": {
+      "family": "JetBrains Mono",
+      "files": [
+        { "path": "src/fonts/JetBrainsMono-Regular.ttf", "weight": "400" },
+        { "path": "src/fonts/JetBrainsMono-Bold.ttf", "weight": "700" }
+      ]
+    }
+  },
+  "logo": {
+    "file": "brand/logo.svg",
+    "min_height_px": 48,
+    "clearspace_px": 24,
+    "on": "dark"
+  },
+  "voice": {
+    "tone": ["direto", "claro", "prático"],
+    "tagline": "aprenda fazendo",
+    "sample_copy": {
+      "title": "Do arquivo ao commit",
+      "caption": "Observe antes de agir."
+    }
+  },
+  "canvas": { "width": 1920, "height": 1080, "fps": 30 },
+  "mode": "dark"
+}

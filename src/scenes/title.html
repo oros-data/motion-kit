@@ -1,0 +1,104 @@
+<template>
+  <style>
+    /*__FONTS__*/
+    [data-composition-id="__ID__"] { position: absolute; inset: 0; }
+    [data-composition-id="__ID__"] .fx { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0; }
+    [data-composition-id="__ID__"] svg.frame { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+    [data-composition-id="__ID__"] .bw { position: absolute; inset: 0; }
+    [data-composition-id="__ID__"] .bloom { position: absolute; inset: 0; }
+    [data-composition-id="__ID__"] .bloom.blur { filter: blur(12px) brightness(1.7) saturate(1.25); opacity: .9; mix-blend-mode: screen; }
+    [data-composition-id="__ID__"] .mode-light .bloom.blur { display: none; }
+    [data-composition-id="__ID__"] .copy { position: absolute; width: 1320px; text-align: center; }
+    [data-composition-id="__ID__"] .logo { display: flex; justify-content: center; color: var(--primary); margin-bottom: 26px; }
+    [data-composition-id="__ID__"] .kicker { font-family: var(--font-mono); font-size: 25px; color: var(--aside); letter-spacing: 4px; font-weight: 700; margin-bottom: 20px; }
+    [data-composition-id="__ID__"] h1 { font-family: var(--font-display); font-size: 88px; line-height: 1.08; color: var(--concept); font-weight: 800; text-shadow: 0 0 26px color-mix(in srgb, var(--concept) 45%, transparent); white-space: pre-wrap; }
+    [data-composition-id="__ID__"] h1 .c { opacity: 0; }
+    [data-composition-id="__ID__"] h1 .cur { display: inline-block; width: 0; overflow: visible; opacity: 0; text-align: left; font-size: .8em; vertical-align: .04em; color: var(--text); }
+    [data-composition-id="__ID__"] .sub { font-size: 35px; color: var(--text); margin-top: 42px; }
+  </style>
+  <div data-composition-id="__ID__" data-width="1920" data-height="1080">
+    <div class="fx">
+      <div class="bw">
+        <div class="bloom blur"></div>
+        <div class="bloom sharp"></div>
+      </div>
+      <div class="copy">
+        <div class="kicker"></div>
+        <h1></h1>
+        <div class="sub"></div>
+      </div>
+    </div>
+    <script>
+      (() => {
+        const item = window.KIT.items["__ID__"];
+        const p = item.props;
+        const root = document.querySelector('[data-composition-id="__ID__"]');
+        const $ = (s) => root.querySelector(s);
+        const Q = (s) => [...root.querySelectorAll(s)];
+        if (p.logo !== false) $(".copy").prepend(K.logo(72));
+        $(".kicker").textContent = p.kicker || "";
+        $(".sub").textContent = p.sub || "";
+        if (window.KIT.theme.mode === "light") $(".bw").classList.add("mode-light");
+
+        const NS = "http://www.w3.org/2000/svg";
+        const build = (tag) => {
+          const svg = document.createElementNS(NS, "svg");
+          svg.setAttribute("class", "frame");
+          svg.setAttribute("viewBox", "0 0 1920 1080");
+          svg.innerHTML = `
+            <defs><pattern id="dith-__ID__-${tag}" width="8" height="8" patternUnits="userSpaceOnUse"><rect x="0" y="0" width="2" height="2" fill="var(--primary)"/><rect x="4" y="4" width="2" height="2" fill="var(--primary)"/></pattern></defs>
+            <rect x="272" y="262" width="1376" height="556" rx="2.8" fill="var(--primary)" class="tint"/>
+            <rect x="272" y="262" width="1376" height="556" fill="url(#dith-__ID__-${tag})" opacity=".15"/>
+            <rect class="r1" x="260" y="250" width="1400" height="580" rx="10" pathLength="1" fill="none" stroke="var(--primary)" stroke-width="4" stroke-dasharray="1" stroke-dashoffset="1"/>
+            <rect class="r2" x="260" y="250" width="1400" height="580" rx="10" pathLength="1" fill="none" stroke="var(--text)" stroke-width="1.2" stroke-dasharray="1" stroke-dashoffset="1"/>
+            <circle class="rip1" cx="960" cy="540" r="14" fill="none" stroke="var(--text)" stroke-width="3.5" opacity="0"/>
+            <circle class="rip2" cx="960" cy="540" r="8" fill="none" stroke="var(--primary)" stroke-width="2" opacity="0"/>`;
+          return svg;
+        };
+        $(".bloom.blur").appendChild(build("a"));
+        $(".bloom.sharp").appendChild(build("b"));
+
+        const text = p.text || window.KIT.identity.voice.sample_copy.title;
+        const h1 = $("h1");
+        const cursors = [];
+        const chars = [];
+        const mkCursor = () => { const s = K.el("span", "cur", "▌"); cursors.push(s); h1.appendChild(s); };
+        mkCursor();
+        [...text].forEach((ch) => { const s = K.el("span", "c", ch); chars.push(s); h1.appendChild(s); mkCursor(); });
+
+        const tl = gsap.timeline({ paused: true });
+        const seconds = item.seconds;
+        K.fade(tl, $(".fx"), seconds, 22 / K.fps);
+        tl.to(Q(".r1,.r2"), { attr: { "stroke-dashoffset": 0 }, duration: 28 / K.fps, ease: "none" }, 0);
+        tl.fromTo(Q(".tint"), { opacity: 0 }, { opacity: 0.08, duration: 14 / K.fps, ease: "none", immediateRender: true }, 0);
+
+        const n = text.length;
+        const typeStart = 0.8, typeSpan = Math.min(2.2, seconds * 0.4);
+        tl.set(cursors[0], { opacity: 1 }, 0);
+        chars.forEach((s, k) => {
+          const t = typeStart + (typeSpan * (k + 1)) / n;
+          tl.set(s, { opacity: 1 }, t);
+          tl.set(cursors[k], { opacity: 0 }, t);
+          if (k + 1 < n) tl.set(cursors[k + 1], { opacity: 1 }, t);
+        });
+
+        const rip = (sel, r0, r1, w0, w1, op) => {
+          const t = Q(sel);
+          tl.set(t, { opacity: 0 }, 0);
+          tl.fromTo(t, { attr: { r: r0 } }, { attr: { r: r1 }, duration: 1.4, ease: "kitOut", immediateRender: false }, 0.6);
+          tl.fromTo(t, { opacity: op, strokeWidth: w0 }, { opacity: 0, strokeWidth: w1, duration: 1.4, ease: "none", immediateRender: false }, 0.6);
+        };
+        rip(".rip1", 14, 284, 3.5, 0.5, 0.9);
+        rip(".rip2", 8, 170, 2, 2, 0.6);
+
+        const frames = Math.round(seconds * K.fps);
+        for (let f = 0; f < frames; f++) {
+          const dip = Math.sin(f * 0.9) * Math.sin(f * 0.17) > 0.93 ? 0.12 : 0;
+          const flicker = Math.min(1, 1 + 0.04 * Math.sin(f * 0.21) - dip);
+          tl.set($(".bw"), { opacity: f === 0 ? 1 : flicker }, f / K.fps);
+        }
+        window.__timelines["__ID__"] = tl;
+      })();
+    </script>
+  </div>
+</template>

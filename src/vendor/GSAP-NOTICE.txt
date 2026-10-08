@@ -1,0 +1,4 @@
+GSAP 3.14.2 e CustomEase 3.14.2 (gsap.min.js, CustomEase.min.js)
+Copyright 2025, GreenSock. All rights reserved.
+Distribuidos sob a GSAP Standard License: https://gsap.com/standard-license
+Nao e uma licenca open source. Uso gratuito em sites, apps e videos; nao pode ser usado para construir um editor visual de animacao concorrente.
