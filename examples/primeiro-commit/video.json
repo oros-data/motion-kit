@@ -1,0 +1,26 @@
+{
+  "title": "Primeiro commit",
+  "hud": { "right": "EXEMPLO · SEM NARRAÇÃO" },
+  "scenes": [
+    {
+      "id": "abertura",
+      "scene": "title",
+      "seconds": 5,
+      "props": { "kicker": "FUNDAMENTOS · PRIMEIRO REPOSITÓRIO", "text": "DO ARQUIVO AO STAGE", "sub": "um laboratório real, passo a passo" }
+    },
+    {
+      "id": "comandos",
+      "scene": "terminal",
+      "props": {
+        "prompt": "aluno@lab $ ",
+        "places": [{ "label": "PASTA" }, { "label": "STAGE" }, { "label": "HISTÓRICO" }]
+      }
+    },
+    {
+      "id": "fechamento",
+      "scene": "closing",
+      "seconds": 5,
+      "props": { "kicker": "MAPA CONSTRUÍDO", "lines": ["status observa.", "add prepara."], "next": "próximo: commit registra" }
+    }
+  ]
+}

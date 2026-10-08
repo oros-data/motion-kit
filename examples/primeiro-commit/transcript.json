@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "repo_name": "diario",
+  "locale": "C",
+  "terminal": {
+    "term": "xterm-256color",
+    "columns": 60
+  },
+  "tool_versions": {
+    "git": "git version 2.55.0",
+    "bash": "GNU bash, version 5.3.15(1)-release (x86_64-pc-linux-gnu)"
+  },
+  "git": {
+    "user_name": "Aluno",
+    "user_email": "aluno@example.com",
+    "author_date": "2025-01-02T03:04:05+00:00",
+    "committer_date": "2025-01-02T03:04:05+00:00",
+    "init_default_branch": "main",
+    "color_ui": "always"
+  },
+  "steps": [
+    {
+      "index": 0,
+      "id": "init",
+      "command": "git init -b main",
+      "wait": 6,
+      "callout": "Git começa local.",
+      "subcallout": "Nada foi publicado ainda.",
+      "highlight": "Initialized empty Git repository",
+      "cwd": "diario",
+      "stdout": "Initialized empty Git repository in ~/diario/.git/\n",
+      "stderr": "",
+      "exit_code": 0,
+      "expected_exit": 0
+    },
+    {
+      "index": 1,
+      "id": "readme",
+      "command": "printf '# Diário\\n' > README.md",
+      "wait": 4,
+      "callout": "Um arquivo nasce na pasta.",
+      "diagram": [
+        {
+          "op": "chip",
+          "file": "README.md"
+        }
+      ],
+      "cwd": "diario",
+      "stdout": "",
+      "stderr": "",
+      "exit_code": 0,
+      "expected_exit": 0
+    },
+    {
+      "index": 2,
+      "id": "add",
+      "command": "git add README.md",
+      "wait": 5,
+      "callout": "ADD ESCOLHE O PRÓXIMO SNAPSHOT",
+      "subcallout": "Só o arquivo escolhido vai para o stage.",
+      "diagram": [
+        {
+          "op": "stage",
+          "files": [
+            "README.md"
+          ]
+        }
+      ],
+      "cwd": "diario",
+      "stdout": "",
+      "stderr": "",
+      "exit_code": 0,
+      "expected_exit": 0
+    },
+    {
+      "index": 3,
+      "id": "status",
+      "command": "git status --short",
+      "wait": 6,
+      "callout": "A À ESQUERDA = PREPARADO",
+      "subcallout": "O stage é separado da pasta de trabalho.",
+      "highlight": "A  README.md",
+      "cwd": "diario",
+      "stdout": "\u001b[32mA\u001b[m  README.md\n",
+      "stderr": "",
+      "exit_code": 0,
+      "expected_exit": 0
+    }
+  ]
+}

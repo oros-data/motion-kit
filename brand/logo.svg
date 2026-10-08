@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 96" fill="none">
+  <rect x="4" y="4" width="88" height="88" rx="20" stroke="currentColor" stroke-width="6"/>
+  <path d="M30 62 L48 30 L66 62" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="116" y="63" font-family="Inter, sans-serif" font-size="40" font-weight="700" fill="currentColor" letter-spacing="2">MARCA</text>
+</svg>
