@@ -1,0 +1,12 @@
+{
+  "title": "Apresentação de marca",
+  "hud": { "right": "EXEMPLO · SEM TERMINAL" },
+  "scenes": [
+    { "id": "abertura", "scene": "kinetic", "seconds": 5, "props": { "text": "Uma marca. Uma voz. Um vídeo por vez.", "highlight": ["marca", "voz"], "sub": "APRESENTAÇÃO" } },
+    { "id": "logo", "scene": "logo", "seconds": 4, "props": {} },
+    { "id": "pilares", "scene": "cards", "seconds": 6, "props": { "kicker": "O QUE FAZEMOS", "headline": "Três pilares, sempre na mesma ordem.", "cards": [{ "title": "OUVIR", "body": "Entender o problema antes da solução." }, { "title": "MOSTRAR", "body": "Exemplos reais, nunca inventados.", "role": "aside" }, { "title": "ENTREGAR", "body": "Pronto para usar no mesmo dia." }], "footer": "cada vídeo segue esta sequência" } },
+    { "id": "antes-depois", "scene": "compare", "seconds": 6, "props": { "kicker": "ANTES E DEPOIS", "headline": "Como era, como fica.", "left": { "title": "ANTES", "items": ["texto solto", "sem identidade", "demora dias"] }, "right": { "title": "DEPOIS", "items": ["roteiro em dados", "sua marca em tudo", "render em minutos"] }, "vs": "→" } },
+    { "id": "frase", "scene": "callout", "seconds": 4, "props": { "kicker": "A REGRA", "text": "Mostre, não descreva.", "sub": "Cada cena vem de um dado real: texto, comando ou comparação." } },
+    { "id": "fim", "scene": "closing", "seconds": 4, "props": { "kicker": "OBRIGADO", "lines": ["Sua marca, seu vídeo."], "next": "próximo: o primeiro vídeo da turma" } }
+  ]
+}

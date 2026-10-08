@@ -14,7 +14,7 @@ Você é o agente de programação de um aluno. Este repositório gera vídeos d
 - `brand/identity.json`: a identidade do aluno (nome, tema, cores, fontes, logo, voz). Validada por `schemas/identity.schema.json`. É a única fonte de cores e fontes.
 - `themes/<nome>/colors.toml`: paletas no formato do Omarchy. `theme` em identity.json escolhe uma; `colors` em identity.json sobrescreve papéis individuais.
 - `videos/<slug>/`: um vídeo = `video.json` (cenas e tempos), `steps.json` (comandos do terminal), `transcript.json` (saída real capturada) e `assets/`.
-- `examples/primeiro-commit/`: exemplo completo de 31 s. Copie para começar um vídeo novo.
+- `examples/primeiro-commit/`: exemplo completo de 31 s com terminal. `examples/apresentacao-de-marca/`: 29 s só com cenas de texto, logo, cartões e comparação. Um vídeo usa qualquer combinação de cenas; a cena `terminal` é opcional (o exemplo com Git existe porque a primeira aula é sobre Git). Copie um deles para começar um vídeo novo.
 - `src/scenes/*.html`: biblioteca de cenas (uma sub-composição HyperFrames por arquivo; props de cada uma em `docs/scenes.md`). `src/kit.js`: utilitários (ANSI, fade, logo). `tools/`: build e comandos.
 - `build/<slug>/`: saída gerada pelo build. Nunca edite nem versione.
 
