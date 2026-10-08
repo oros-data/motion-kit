@@ -20,6 +20,8 @@ Cada cena é um arquivo em `src/scenes/` e uma entrada em `video.json`: `{"id": 
 
 Cada passo: `id`, `command` (comandos maiores que a largura da janela quebram em linhas de continuação, no comando atual e no anterior esmaecido; a saída real quebra do mesmo jeito), `wait` (segundos na tela; a cena dura a soma dos waits), `callout`, `subcallout`, `highlight` (substring de uma linha da saída que recebe a barra de destaque), `expected_exit` (padrão 0; um erro esperado vira saída vermelha com `exit 1`) e `diagram`, uma lista de operações no diagrama de lugares:
 
+Cada passo começa na raiz do repositório descartável e o `cd` não persiste entre passos. A saída real vai para o vídeo: evite `ls -l` e comandos que imprimem nome de usuário, hostname, datas ou caminhos absolutos do home.
+
 | operação | efeito |
 |---|---|
 | `{"op": "chip", "file": "README.md", "place": 0}` | um arquivo aparece no lugar (padrão: o primeiro) |

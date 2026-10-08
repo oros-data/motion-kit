@@ -181,7 +181,7 @@ const commands = {
     const dir = videoDir();
     const result = doBuild(dir);
     const at = flags.at || snapshotTimes(result).join(',');
-    must(hf(['snapshot', buildDir(dir), '--at', at, '--no-browser-gpu', '--no-end']), 'snapshot');
+    must(hf(['snapshot', buildDir(dir), '--at', at, '--no-browser-gpu', '--no-end', '--describe', String(flags.describe || false)]), 'snapshot');
     phoneSheet(buildDir(dir));
   },
 

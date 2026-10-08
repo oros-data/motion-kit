@@ -1,4 +1,4 @@
-import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { basename, join, resolve } from 'node:path';
 import { contrastReport, cssVariables, fontFaces, loadIdentity, textRoles } from './identity.mjs';
 
@@ -42,7 +42,8 @@ export function build(root, videoDir, options = {}) {
   if (failures.length) fail(`tema "${theme.name}": contraste insuficiente em ${failures.length} par(es); ajuste colors em brand/identity.json ou themes/${theme.name}/theme.toml`);
 
   const out = resolve(root, options.out || join('build', slug));
-  rmSync(out, { recursive: true, force: true });
+  mkdirSync(out, { recursive: true });
+  for (const entry of readdirSync(out)) if (entry !== 'renders' && entry !== 'snapshots') rmSync(join(out, entry), { recursive: true, force: true });
   for (const dir of ['compositions', 'lib', 'fonts', 'audio']) mkdirSync(join(out, dir), { recursive: true });
 
   if (!Array.isArray(video.scenes) || !video.scenes.length) fail('video.json: "scenes" precisa de pelo menos uma cena');
