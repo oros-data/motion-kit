@@ -1,6 +1,6 @@
 import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { basename, join, resolve } from 'node:path';
-import { contrastReport, cssVariables, fontFaces, loadIdentity } from './identity.mjs';
+import { contrastReport, cssVariables, fontFaces, loadIdentity, textRoles } from './identity.mjs';
 
 const SCENE_DIR = 'src/scenes';
 
@@ -34,7 +34,7 @@ export function build(root, videoDir, options = {}) {
   const video = JSON.parse(readFileSync(videoFile, 'utf8'));
   const slug = basename(videoDir);
   const { identity, theme } = loadIdentity(root, options.theme);
-  const report = contrastReport(theme);
+  const report = contrastReport(theme, textRoles(identity, theme));
   const failures = report.filter((r) => r.status === 'fail');
   for (const r of report.filter((r) => r.status !== 'pass')) {
     console.log(`  contraste ${r.status.toUpperCase()}: ${r.label} ${r.ratio}:1 (mínimo ${r.min}:1) ${r.fg} sobre ${r.bg}`);

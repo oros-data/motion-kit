@@ -1,3 +1,4 @@
+<!-- firstmate:maintained-by-project -->
 # AGENTS.md — contrato do agente no motion-kit
 
 Você é o agente de programação de um aluno. Este repositório gera vídeos de motion design com HyperFrames, renderizados na máquina do aluno, com a identidade dele. Siga estas regras sem exceção.
@@ -14,7 +15,7 @@ Você é o agente de programação de um aluno. Este repositório gera vídeos d
 - `themes/<nome>/colors.toml`: paletas no formato do Omarchy. `theme` em identity.json escolhe uma; `colors` em identity.json sobrescreve papéis individuais.
 - `videos/<slug>/`: um vídeo = `video.json` (cenas e tempos), `steps.json` (comandos do terminal), `transcript.json` (saída real capturada) e `assets/`.
 - `examples/primeiro-commit/`: exemplo completo de 31 s. Copie para começar um vídeo novo.
-- `src/scenes/*.html`: biblioteca de cenas (uma sub-composição HyperFrames por arquivo). `src/kit.js`: utilitários (ANSI, fade, logo). `tools/`: build e comandos.
+- `src/scenes/*.html`: biblioteca de cenas (uma sub-composição HyperFrames por arquivo; props de cada uma em `docs/scenes.md`). `src/kit.js`: utilitários (ANSI, fade, logo). `tools/`: build e comandos.
 - `build/<slug>/`: saída gerada pelo build. Nunca edite nem versione.
 
 ## Receitas
@@ -65,3 +66,7 @@ Você é o agente de programação de um aluno. Este repositório gera vídeos d
 ## Preview ao vivo
 
 `npm run dev -- videos/<slug>` abre o Studio do HyperFrames no navegador sobre `build/<slug>/`. É para olhar e ajustar tempos; mudanças definitivas vão em `src/scenes/` e `video.json`.
+
+## Manutenção deste arquivo
+
+Guarde aqui só o que serve a quase toda sessão de agente neste projeto. Não repita o que o código já mostra; aponte para o arquivo ou comando. Prefira reescrever ou podar a acrescentar. Ao atualizar, mantenha esta barra para todos os agentes e as entradas curtas.

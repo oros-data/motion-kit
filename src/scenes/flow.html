@@ -1,0 +1,53 @@
+<template>
+  <style>
+    /*__FONTS__*/
+    [data-composition-id="__ID__"] { position: absolute; inset: 0; }
+    [data-composition-id="__ID__"] .fx { position: absolute; inset: 0; padding: 150px 125px 110px; opacity: 0; }
+    [data-composition-id="__ID__"] .kicker { font-family: var(--font-mono); font-size: 25px; color: var(--aside); letter-spacing: 4px; font-weight: 700; margin-bottom: 20px; }
+    [data-composition-id="__ID__"] h2 { font-size: 68px; line-height: 1.08; font-weight: 800; color: var(--concept); }
+    [data-composition-id="__ID__"] .row { display: flex; align-items: center; justify-content: center; gap: 22px; margin-top: 84px; }
+    [data-composition-id="__ID__"] .place { flex: 1; max-width: 470px; min-height: 250px; border: 3px solid; border-radius: 20px; padding: 32px; background: color-mix(in srgb, var(--surface) 85%, var(--bg)); opacity: 0; }
+    [data-composition-id="__ID__"] .place .l { font-family: var(--font-mono); font-size: 34px; font-weight: 700; line-height: 1.1; letter-spacing: 1px; }
+    [data-composition-id="__ID__"] .place .s { font-size: 28px; color: var(--text); line-height: 1.4; margin-top: 26px; }
+    [data-composition-id="__ID__"] .arrow { font-size: 56px; color: var(--muted); opacity: 0; }
+    [data-composition-id="__ID__"] .foot { font-family: var(--font-mono); font-size: 30px; color: var(--muted); margin-top: 60px; text-align: center; letter-spacing: 1px; }
+  </style>
+  <div data-composition-id="__ID__" data-width="1920" data-height="1080">
+    <div class="fx">
+      <div class="kicker"></div>
+      <h2></h2>
+      <div class="row"></div>
+      <div class="foot"></div>
+    </div>
+    <script>
+      (() => {
+        const item = window.KIT.items["__ID__"];
+        const p = item.props;
+        const root = document.querySelector('[data-composition-id="__ID__"]');
+        const $ = (s) => root.querySelector(s);
+        $(".kicker").textContent = p.kicker || "";
+        $("h2").textContent = p.headline || "";
+        $(".foot").textContent = p.footer || "";
+        const nodes = [];
+        (p.steps || []).forEach((step, i) => {
+          if (i > 0) nodes.push($(".row").appendChild(K.el("div", "arrow", "→")));
+          const role = step.role || (i % 2 === 0 ? "aside" : "concept");
+          const node = K.el("div", "place");
+          node.style.borderColor = `var(--${role})`;
+          node.style.boxShadow = `0 0 34px color-mix(in srgb, var(--${role}) 14%, transparent)`;
+          const l = K.el("div", "l", step.label || "");
+          l.style.color = `var(--${role})`;
+          node.append(l, K.el("div", "s", step.sub || ""));
+          nodes.push($(".row").appendChild(node));
+        });
+        const tl = gsap.timeline({ paused: true });
+        K.fade(tl, $(".fx"), item.seconds, 18 / K.fps);
+        const stagger = Math.min(0.9, (item.seconds - 3) / Math.max(1, nodes.length));
+        nodes.forEach((node, i) => {
+          tl.fromTo(node, { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.6, ease: "power3.out", immediateRender: true }, 1.4 + i * stagger);
+        });
+        window.__timelines["__ID__"] = tl;
+      })();
+    </script>
+  </div>
+</template>

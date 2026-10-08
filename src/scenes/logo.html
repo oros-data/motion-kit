@@ -1,0 +1,48 @@
+<template>
+  <style>
+    /*__FONTS__*/
+    [data-composition-id="__ID__"] { position: absolute; inset: 0; }
+    [data-composition-id="__ID__"] .fx { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; }
+    [data-composition-id="__ID__"] svg.frame { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+    [data-composition-id="__ID__"] .logo { position: relative; color: var(--primary); opacity: 0; filter: drop-shadow(0 0 24px color-mix(in srgb, var(--primary) 50%, transparent)); }
+    [data-composition-id="__ID__"] .name { position: relative; margin-top: 44px; font-size: 44px; font-weight: 700; color: var(--text); letter-spacing: 2px; opacity: 0; }
+    [data-composition-id="__ID__"] .tag { position: relative; margin-top: 18px; font-family: var(--font-mono); font-size: 26px; color: var(--muted); letter-spacing: 4px; opacity: 0; }
+  </style>
+  <div data-composition-id="__ID__" data-width="1920" data-height="1080">
+    <div class="fx">
+      <div class="name"></div>
+      <div class="tag"></div>
+    </div>
+    <script>
+      (() => {
+        const item = window.KIT.items["__ID__"];
+        const p = item.props;
+        const id = window.KIT.identity;
+        const root = document.querySelector('[data-composition-id="__ID__"]');
+        const $ = (s) => root.querySelector(s);
+        const Q = (s) => [...root.querySelectorAll(s)];
+        const NS = "http://www.w3.org/2000/svg";
+        const svg = document.createElementNS(NS, "svg");
+        svg.setAttribute("class", "frame");
+        svg.setAttribute("viewBox", "0 0 1920 1080");
+        svg.innerHTML = `
+          <rect class="r1" x="560" y="300" width="800" height="480" rx="12" pathLength="1" fill="none" stroke="var(--primary)" stroke-width="3" stroke-dasharray="1" stroke-dashoffset="1"/>
+          <rect class="r2" x="572" y="312" width="776" height="456" rx="6" pathLength="1" fill="none" stroke="var(--text)" stroke-width="1" opacity=".6" stroke-dasharray="1" stroke-dashoffset="1"/>
+          <circle class="rip" cx="960" cy="540" r="10" fill="none" stroke="var(--primary)" stroke-width="3" opacity="0"/>`;
+        $(".fx").prepend(svg);
+        const logo = K.logo(p.height || id.logo.min_height_px * 3);
+        $(".fx").insertBefore(logo, $(".name"));
+        $(".name").textContent = p.name === undefined ? id.name : p.name;
+        $(".tag").textContent = p.tagline === undefined ? id.voice.tagline : p.tagline;
+        const tl = gsap.timeline({ paused: true });
+        K.fade(tl, $(".fx"), item.seconds, 16 / K.fps);
+        tl.to(Q(".r1,.r2"), { attr: { "stroke-dashoffset": 0 }, duration: 0.9, ease: "none" }, 0);
+        tl.fromTo(logo, { opacity: 0, scale: 0.86 }, { opacity: 1, scale: 1, duration: 0.9, ease: "kitOut", immediateRender: true }, 0.5);
+        tl.fromTo(Q(".rip"), { attr: { r: 10 }, opacity: 0.9 }, { attr: { r: 420 }, opacity: 0, duration: 1.5, ease: "kitOut", immediateRender: false }, 0.7);
+        tl.fromTo($(".name"), { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out", immediateRender: true }, 1.2);
+        tl.to($(".tag"), { opacity: 1, duration: 0.5 }, 1.7);
+        window.__timelines["__ID__"] = tl;
+      })();
+    </script>
+  </div>
+</template>

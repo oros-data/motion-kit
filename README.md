@@ -19,7 +19,7 @@ npm run doctor
 ## Caminho de 60 a 90 minutos
 
 1. **Prova de vida (5 min).** `npm run smoke` captura o exemplo, faz build, confere, tira snapshots e renderiza 3 segundos. Se passar, sua máquina renderiza.
-2. **Sua identidade (15 min).** Edite `brand/identity.json`: nome, `theme` (`tokyo-night` ou `osaka-jade`), fontes, logo (troque `brand/logo.svg`), voz. `npm run identity:check` valida e mostra a tabela de contraste. Detalhes em [docs/identity.md](docs/identity.md) e [docs/themes.md](docs/themes.md).
+2. **Sua identidade (15 min).** Edite `brand/identity.json`: nome, `theme` (`tokyo-night` ou `osaka-jade`), fontes, logo (troque `brand/logo.svg`), voz. `npm run identity:check` valida e mostra a tabela de contraste. Detalhes em [docs/identity.md](docs/identity.md) e [docs/themes.md](docs/themes.md). As cenas disponíveis estão em [docs/scenes.md](docs/scenes.md).
 3. **Veja o exemplo com a sua cara (5 min).** `npm run snapshot -- examples/primeiro-commit` e abra `build/primeiro-commit/snapshots/contact-sheet.jpg` e `phone-sheet-360.png`.
 4. **Seu vídeo (30 min).** Peça ao agente, por exemplo: "faça um vídeo de 60 s explicando git add com a minha identidade; use a cena terminal com comandos reais". O agente segue `AGENTS.md`: copia o exemplo para `videos/<slug>/`, escreve `steps.json`, captura a saída real com `npm run capture`, escreve `video.json`, roda `npm run check` e `npm run snapshot`.
 5. **Prévia e render (15 min).** `npm run preview -- videos/<slug>` (960x540, rápido) e depois `npm run render -- videos/<slug>` (1920x1080). O vídeo fica em `build/<slug>/renders/`.
@@ -50,4 +50,4 @@ npm run doctor
 
 ## Licença
 
-Uso pessoal pelos participantes das aulas; veja [LICENSE](LICENSE). Componentes de terceiros em [NOTICES.md](NOTICES.md).
+Uso pessoal pelos participantes das aulas; veja [LICENSE](LICENSE), [docs/licensing.md](docs/licensing.md) e [NOTICES.md](NOTICES.md).

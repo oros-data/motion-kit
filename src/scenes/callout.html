@@ -1,0 +1,36 @@
+<template>
+  <style>
+    /*__FONTS__*/
+    [data-composition-id="__ID__"] { position: absolute; inset: 0; }
+    [data-composition-id="__ID__"] .fx { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 0 200px 80px 220px; opacity: 0; }
+    [data-composition-id="__ID__"] .kicker { font-family: var(--font-mono); font-size: 25px; color: var(--aside); letter-spacing: 4px; font-weight: 700; margin-bottom: 28px; }
+    [data-composition-id="__ID__"] .box { border-left: 8px solid var(--concept); padding: 30px 0 30px 44px; background: linear-gradient(90deg, color-mix(in srgb, var(--concept) 12%, transparent), transparent 70%); max-width: 1300px; }
+    [data-composition-id="__ID__"] .a { font-size: 76px; line-height: 1.1; font-weight: 800; color: var(--concept); }
+    [data-composition-id="__ID__"] .b { font-size: 36px; line-height: 1.4; color: var(--text); margin-top: 30px; }
+    [data-composition-id="__ID__"] .foot { font-family: var(--font-mono); font-size: 26px; color: var(--muted); margin-top: 48px; letter-spacing: 1px; }
+  </style>
+  <div data-composition-id="__ID__" data-width="1920" data-height="1080">
+    <div class="fx">
+      <div class="kicker"></div>
+      <div class="box"><div class="a"></div><div class="b"></div></div>
+      <div class="foot"></div>
+    </div>
+    <script>
+      (() => {
+        const item = window.KIT.items["__ID__"];
+        const p = item.props;
+        const root = document.querySelector('[data-composition-id="__ID__"]');
+        const $ = (s) => root.querySelector(s);
+        $(".kicker").textContent = p.kicker || "";
+        $(".a").textContent = p.text || window.KIT.identity.voice.sample_copy.caption;
+        $(".b").textContent = p.sub || "";
+        $(".foot").textContent = p.footer || "";
+        const tl = gsap.timeline({ paused: true });
+        K.fade(tl, $(".fx"), item.seconds, 16 / K.fps);
+        tl.fromTo($(".box"), { x: -40 }, { x: 0, duration: 0.8, ease: "power3.out", immediateRender: true }, 0.1);
+        tl.fromTo($(".b"), { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out", immediateRender: true }, 0.9);
+        window.__timelines["__ID__"] = tl;
+      })();
+    </script>
+  </div>
+</template>
