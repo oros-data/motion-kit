@@ -24,6 +24,8 @@ npm run doctor
 4. **Seu vídeo (30 min).** Peça ao agente, por exemplo: "faça um vídeo com a duração que a atividade pede (por exemplo 30 s) explicando git add com a minha identidade; use a cena terminal com comandos reais". O agente segue `AGENTS.md`: copia o exemplo para `videos/<slug>/`, escreve `steps.json`, captura a saída real com `npm run capture`, escreve `video.json`, roda `npm run check` e `npm run snapshot`.
 5. **Prévia e render (15 min).** `npm run preview -- videos/<slug>` (960x540, rápido) e depois `npm run render -- videos/<slug>` (1920x1080). O vídeo fica em `build/<slug>/renders/`.
 
+Um vídeo pode usar qualquer combinação de cenas; a cena `terminal` é opcional. O exemplo com Git existe porque a primeira aula é sobre Git; `examples/apresentacao-de-marca` (29 s) não tem terminal nenhum.
+
 ## Comandos
 
 | comando | o que faz |
