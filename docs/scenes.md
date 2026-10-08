@@ -1,11 +1,11 @@
 # Catálogo de cenas
 
-Cada cena é um arquivo em `src/scenes/` e uma entrada em `video.json`: `{"id": "...", "scene": "<nome>", "seconds": N, "props": {...}}`. Cores e fontes vêm sempre da identidade. Textos omitidos usam `voice.sample_copy` e `voice.tagline` da identidade.
+Cada cena é um arquivo em `src/scenes/` e uma entrada em `video.json`: `{"id": "...", "scene": "<nome>", "seconds": N, "props": {...}}`. Cores e fontes vêm sempre da identidade. Imagens do vídeo ficam em `videos/<slug>/assets/` e as cenas as usam como `assets/x.png`. Textos omitidos usam `voice.sample_copy` e `voice.tagline` da identidade.
 
 | cena | para quê | props |
 |---|---|---|
 | `title` | cartão de abertura: logo, kicker, título digitado dentro de uma moldura neon, subtítulo | `kicker`, `text`, `sub`, `logo: false` para omitir o logo |
-| `logo` | revelação do logo com moldura e onda, nome e tagline | `height` (px do logo), `name`, `tagline` (string vazia esconde) |
+| `logo` | revelação do logo com moldura e onda, nome e tagline | `height` (px do logo), `name`, `tagline` (até cerca de 30 caracteres; texto maior passa da moldura; string vazia esconde) |
 | `kinetic` | frase grande que entra palavra por palavra | `text`, `highlight: ["palavra", ...]` (cor conceito), `aside: [...]` (cor apoio), `sub` |
 | `cards` | título e 1 a 4 cartões numerados em sequência | `kicker`, `headline`, `cards: [{title, body, role?}]`, `footer` |
 | `callout` | uma afirmação com barra lateral e explicação | `kicker`, `text`, `sub`, `footer` |

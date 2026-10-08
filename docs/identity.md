@@ -18,4 +18,8 @@ A janela da cena `terminal` usa sempre a paleta escura do tema (`themes/<tema>/c
 
 Regras de contraste (medidas pelo kit): texto sobre fundo e sobre superfície 4.5:1 ou mais (falha), `muted` 4.5:1 (o kit recalcula `muted` do tema para passar), `primary`, `secondary` e `danger` 3:1 (aviso). Em identidade clara, defina também `colors.danger` (por exemplo `#b3261e`) para evitar o aviso de contraste. Olhe sempre `phone-sheet-360.png`: o que não se lê a 360 px de largura não se lê no celular.
 
+Logo raster (PNG, JPG) precisa de um SVG que o embrulhe: `<svg viewBox="0 0 W H"><image href="data:image/png;base64,..."/></svg>`; ele não herda `currentColor`.
+
+Tema claro: `foreground`, `bright_foreground`, `lighter_background`, `magenta` e `red` do `colors.toml` também viram os papéis `muted`, `text`, `surface`, `secondary` e `danger`, enquanto o terminal usa uma paleta escura própria. Para uma marca clara, defina esses papéis em `colors` no `identity.json` e confira com `npm run identity:check`.
+
 Use só logos e fontes que você tem direito de usar.

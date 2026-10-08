@@ -1,4 +1,4 @@
-import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { copyFileSync, cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { basename, join, resolve } from 'node:path';
 import { contrastReport, cssVariables, fontFaces, loadIdentity, textRoles } from './identity.mjs';
 
@@ -86,6 +86,7 @@ export function build(root, videoDir, options = {}) {
     const html = readFileSync(join(root, SCENE_DIR, `${item.scene}.html`), 'utf8').replaceAll('__ID__', id).replace('/*__FONTS__*/', faces);
     writeFileSync(join(out, 'compositions', `${id}.html`), html);
   }
+  if (existsSync(join(videoDir, 'assets'))) cpSync(join(videoDir, 'assets'), join(out, 'assets'), { recursive: true });
   for (const file of ['gsap.min.js', 'CustomEase.min.js', 'GSAP-NOTICE.txt']) copyFileSync(join(root, 'src', 'vendor', file), join(out, 'lib', file));
   copyFileSync(join(root, 'src', 'kit.js'), join(out, 'lib', 'kit.js'));
   copyFileSync(join(root, 'src', 'audio', 'silence.m4a'), join(out, 'audio', 'silence.m4a'));

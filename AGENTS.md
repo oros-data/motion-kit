@@ -12,7 +12,7 @@ Você é o agente de programação de um aluno. Este repositório gera vídeos d
 
 - `brand/identity.json`: a identidade do aluno (nome, tema, cores, fontes, logo, voz). Validada por `schemas/identity.schema.json`. É a única fonte de cores e fontes.
 - `themes/<nome>/colors.toml`: paletas no formato do Omarchy. `theme` em identity.json escolhe uma; `colors` em identity.json sobrescreve papéis individuais.
-- `videos/<slug>/`: um vídeo = `video.json` (cenas e tempos), `steps.json` (comandos do terminal), `transcript.json` (saída real capturada) e `assets/`.
+- `videos/<slug>/`: um vídeo = `video.json` (cenas e tempos), `steps.json` (comandos do terminal), `transcript.json` (saída real capturada) e `assets/`. Os arquivos de `assets/` vão para `build/<slug>/assets/` e as cenas os referenciam de forma relativa, como `assets/x.png`.
 - `examples/primeiro-commit/`: exemplo completo de 31 s com terminal. `examples/apresentacao-de-marca/`: 29 s só com cenas de texto, logo, cartões e comparação. Um vídeo usa qualquer combinação de cenas; a cena `terminal` é opcional (o exemplo com Git existe porque a primeira aula é sobre Git). Copie um deles para começar um vídeo novo.
 - `src/scenes/*.html`: biblioteca de cenas (uma sub-composição HyperFrames por arquivo; props de cada uma em `docs/scenes.md`). `src/kit.js`: utilitários (ANSI, fade, logo). `tools/`: build e comandos.
 - `build/<slug>/`: saída gerada pelo build. Nunca edite nem versione.
@@ -41,7 +41,7 @@ Você é o agente de programação de um aluno. Este repositório gera vídeos d
 1. `npm run check -- videos/<slug>`: lint + runtime + layout + movimento + contraste. Corrija todo erro antes de seguir.
 2. `npm run snapshot -- videos/<slug>`: quadros em `build/<slug>/snapshots/` (contact-sheet.jpg e phone-sheet-360.png). Olhe os dois; texto ilegível a 360 px é defeito.
 3. `npm run preview -- videos/<slug>`: render em 960x540, rápido.
-4. Só então `npm run render -- videos/<slug>`. Nunca diga que conferiu um render sem ter olhado os snapshots.
+4. Só então `npm run render -- videos/<slug>`. Para olhar momentos específicos, use `npm run snapshot -- videos/<slug> --at 1,2.6,...` (segundos). Nunca diga que conferiu um render sem ter olhado os snapshots.
 
 ## Regras duras das composições HyperFrames
 
