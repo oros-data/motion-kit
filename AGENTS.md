@@ -22,7 +22,7 @@ Você é o agente de programação de um aluno. Este repositório gera vídeos d
 
 ### 1. Vídeo novo
 1. `cp -r examples/primeiro-commit videos/<slug>` e apague `transcript.json` e `.work/` copiados.
-2. Escreva `video.json`: lista `scenes`, cada uma com `id` (minúsculas e hífens), `scene` (nome de arquivo em `src/scenes/`), `seconds` (exceto `terminal`, cuja duração vem da soma dos `wait` dos passos) e `props`. Mantenha 60 a 240 s no total.
+2. Escreva `video.json`: lista `scenes`, cada uma com `id` (minúsculas e hífens), `scene` (nome de arquivo em `src/scenes/`), `seconds` (exceto `terminal`, cuja duração vem da soma dos `wait` dos passos) e `props`. Mantenha a duração que a atividade pedir; sem duração definida, use 60 a 240 s no total.
 3. Se houver cena `terminal`, escreva `steps.json` e capture (receita 3).
 4. `npm run build -- videos/<slug>` imprime a grade de tempos. Depois siga o ciclo de validação.
 
@@ -33,7 +33,7 @@ Você é o agente de programação de um aluno. Este repositório gera vídeos d
 - Fique fora da região do apresentador: x 1492–1848, y 830–1030 (canto inferior direito). Mostre-a com `--variables '{"debugSafe":true}'` no render.
 
 ### 3. Capturar saída real do terminal (nunca invente saída)
-1. Em `steps.json`: `repo_name`, `terminal_columns` e `steps`, cada passo com `id`, `command` (bash), `wait` (segundos na tela), opcionais `callout`, `subcallout`, `highlight` (substring de uma linha da saída), `expected_exit` e `diagram` (lista de operações: `{"op":"chip","file":"X"}`, `{"op":"stage","files":[...]}`, `{"op":"commit","label":"..."}`).
+1. Em `steps.json`: `repo_name`, `terminal_columns` e `steps`, cada passo com `id`, `command` (bash; comandos longos quebram em linhas de continuação na tela, mas um passo curto lê melhor), `wait` (segundos na tela), opcionais `callout`, `subcallout`, `highlight` (substring de uma linha da saída), `expected_exit` e `diagram` (lista de operações: `{"op":"chip","file":"X"}`, `{"op":"stage","files":[...]}`, `{"op":"commit","label":"..."}`).
 2. `npm run capture -- videos/<slug>` roda os comandos em um repositório descartável (data fixa, locale C, cores ANSI ligadas) e grava `transcript.json`. Precisa de `bash` e `python3`; no Windows use WSL2.
 3. Se a saída não for a esperada, corrija `steps.json` e capture de novo. Nunca edite `transcript.json` à mão. Versione o `transcript.json`.
 4. Na cena `terminal`, `props.steps` escolhe um subconjunto de ids; sem ele, todos os passos entram.

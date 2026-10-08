@@ -18,7 +18,7 @@ Cada cena é um arquivo em `src/scenes/` e uma entrada em `video.json`: `{"id": 
 
 ## Terminal: o que vem de `steps.json`
 
-Cada passo: `id`, `command`, `wait` (segundos na tela; a cena dura a soma dos waits), `callout`, `subcallout`, `highlight` (substring de uma linha da saída que recebe a barra de destaque), `expected_exit` (padrão 0; um erro esperado vira saída vermelha com `exit 1`) e `diagram`, uma lista de operações no diagrama de lugares:
+Cada passo: `id`, `command` (comandos maiores que a largura da janela quebram em linhas de continuação, no comando atual e no anterior esmaecido; a saída real quebra do mesmo jeito), `wait` (segundos na tela; a cena dura a soma dos waits), `callout`, `subcallout`, `highlight` (substring de uma linha da saída que recebe a barra de destaque), `expected_exit` (padrão 0; um erro esperado vira saída vermelha com `exit 1`) e `diagram`, uma lista de operações no diagrama de lugares:
 
 | operação | efeito |
 |---|---|
@@ -28,6 +28,8 @@ Cada passo: `id`, `command`, `wait` (segundos na tela; a cena dura a soma dos wa
 | `{"op": "commit", "label": "primeiro commit", "from": 1, "to": 2}` | as cópias somem, os originais esmaecem e um nó com o hash lido da saída real aparece no destino |
 
 Os lugares vêm de `props.places` na cena; sem `places`, só o terminal e o callout aparecem.
+
+A janela do terminal usa a paleta escura do tema mesmo em identidades claras (tokens `--term-*`).
 
 ## Layout fixo
 

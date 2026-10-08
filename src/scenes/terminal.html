@@ -4,26 +4,26 @@
     [data-composition-id="__ID__"] { position: absolute; inset: 0; }
     [data-composition-id="__ID__"] .fx { position: absolute; inset: 0; opacity: 0; }
     [data-composition-id="__ID__"] .win { position: absolute; left: 70px; top: 125px; width: 1300px; height: 815px; border: 3px solid var(--line); border-radius: 18px; background: var(--term-bg); overflow: hidden; box-shadow: 0 0 44px color-mix(in srgb, var(--primary) 14%, transparent), inset 0 0 45px rgba(0,0,0,.4); font-family: var(--font-mono); font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
-    [data-composition-id="__ID__"] .bar { height: 68px; border-bottom: 2px solid var(--line); display: flex; align-items: center; padding: 0 28px; gap: 13px; background: var(--surface); }
+    [data-composition-id="__ID__"] .bar { height: 68px; border-bottom: 2px solid var(--term-line); display: flex; align-items: center; padding: 0 28px; gap: 13px; background: var(--term-surface); }
     [data-composition-id="__ID__"] .dot { width: 15px; height: 15px; border-radius: 50%; }
-    [data-composition-id="__ID__"] .wt { margin-left: 18px; color: var(--muted); font-size: 23px; }
-    [data-composition-id="__ID__"] .wg { margin-left: auto; color: var(--aside); font-size: 20px; }
+    [data-composition-id="__ID__"] .wt { margin-left: 18px; color: var(--term-muted); font-size: 23px; }
+    [data-composition-id="__ID__"] .wg { margin-left: auto; color: var(--term-accent); font-size: 20px; }
     [data-composition-id="__ID__"] .steps { position: absolute; left: 0; right: 0; top: 68px; bottom: 46px; }
     [data-composition-id="__ID__"] .step { position: absolute; inset: 0; padding: 32px 42px; font-size: 35px; line-height: 1.23; opacity: 0; }
-    [data-composition-id="__ID__"] .prev { display: flex; font-size: 25px; line-height: 1.4; color: var(--muted); opacity: .55; margin-bottom: 28px; white-space: nowrap; overflow: hidden; }
-    [data-composition-id="__ID__"] .prev .cmd { overflow: hidden; text-overflow: ellipsis; }
+    [data-composition-id="__ID__"] .prev { display: flex; font-size: 25px; line-height: 1.4; color: var(--term-muted); opacity: .55; margin-bottom: 28px; }
+    [data-composition-id="__ID__"] .prev .cmd { flex: 1; white-space: pre-wrap; overflow-wrap: anywhere; }
     [data-composition-id="__ID__"] .prev .ex { margin-left: auto; padding-left: 20px; }
-    [data-composition-id="__ID__"] .no { font-size: 24px; color: var(--muted); margin-bottom: 20px; }
+    [data-composition-id="__ID__"] .no { font-size: 24px; color: var(--term-muted); margin-bottom: 20px; }
     [data-composition-id="__ID__"] .cmdrow { font-size: 38px; color: var(--term-fg); white-space: pre-wrap; overflow-wrap: anywhere; min-height: 47px; font-weight: 700; }
-    [data-composition-id="__ID__"] .cmdrow .p { color: var(--aside); }
+    [data-composition-id="__ID__"] .cmdrow .p { color: var(--term-prompt); }
     [data-composition-id="__ID__"] .cmdrow .c { opacity: 0; }
     [data-composition-id="__ID__"] .cmdrow .cur { display: inline-block; width: 0; overflow: visible; opacity: 0; color: var(--term-cursor); }
     [data-composition-id="__ID__"] .out { margin-top: 30px; font-size: 32px; line-height: 43px; font-weight: 700; }
     [data-composition-id="__ID__"] .ol { min-height: 43px; white-space: pre-wrap; overflow-wrap: anywhere; border-left: 5px solid transparent; margin-left: -18px; padding-left: 13px; color: var(--term-fg); opacity: 0; }
-    [data-composition-id="__ID__"] .ol.err { color: var(--error); }
-    [data-composition-id="__ID__"] .ol.hl { background: var(--term-selection); border-left-color: var(--primary); }
-    [data-composition-id="__ID__"] .none { font-size: 25px; color: var(--muted); opacity: 0; }
-    [data-composition-id="__ID__"] .foot { position: absolute; bottom: 0; left: 0; right: 0; height: 46px; border-top: 1px solid var(--line); padding: 10px 22px; font-size: 20px; color: var(--muted); display: flex; justify-content: space-between; }
+    [data-composition-id="__ID__"] .ol.err { color: var(--term-error); }
+    [data-composition-id="__ID__"] .ol.hl { background: var(--term-selection); border-left-color: var(--term-accent); }
+    [data-composition-id="__ID__"] .none { font-size: 25px; color: var(--term-muted); opacity: 0; }
+    [data-composition-id="__ID__"] .foot { position: absolute; bottom: 0; left: 0; right: 0; height: 46px; border-top: 1px solid var(--term-line); padding: 10px 22px; font-size: 20px; color: var(--term-muted); display: flex; justify-content: space-between; }
     [data-composition-id="__ID__"] .foot .exs { position: relative; width: 120px; text-align: right; }
     [data-composition-id="__ID__"] .foot .ex { position: absolute; right: 0; top: 0; opacity: 0; }
     [data-composition-id="__ID__"] .diag { position: absolute; left: 1408px; top: 120px; width: 440px; height: 410px; font-family: var(--font-mono); }
@@ -188,7 +188,7 @@
           stepsHost.appendChild(node);
 
           const exit = el("span", "ex", `${labels.exit} ${step.exit_code}`);
-          exit.style.color = step.exit_code === 0 ? "var(--aside)" : "var(--error)";
+          exit.style.color = step.exit_code === 0 ? "var(--term-accent)" : "var(--term-error)";
           exHost.appendChild(exit);
 
           const cb = el("div", "cb");
