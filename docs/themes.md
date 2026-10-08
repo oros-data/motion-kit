@@ -6,7 +6,7 @@ Um tema é uma pasta em `themes/<nome>/` com:
 - `NOTICE`: de onde veio e a licença.
 - `theme.toml` (opcional): `[roles]` com papéis sobrescritos, por exemplo `secondary = "#D2689C"`.
 
-Mapeamento para os sete papéis: `background` ← background, `surface` ← lighter_background, `primary` ← accent, `secondary` ← magenta, `text` ← bright_foreground, `danger` ← red, `muted` ← mistura de foreground com background ajustada até 4.5:1 sobre fundo e superfície. O `muted` do Omarchy vira o token `line` (bordas). Terminal: fundo ← dark_background, texto ← foreground, ANSI 30–37 ← background, red, green, yellow, blue, magenta, cyan, foreground; 90–97 ← muted, bright_*, bright_foreground; linha destacada ← selection.
+Mapeamento para os sete papéis: `background` ← background, `surface` ← lighter_background, `primary` ← accent, `secondary` ← magenta, `text` ← bright_foreground, `danger` ← red, `muted` ← mistura de foreground com background ajustada até 4.5:1 sobre fundo e superfície. O `muted` do Omarchy vira o token `line` (bordas). Os papéis de texto (`concept`, `aside`, `base`, `error`) são as cores de `identity.roles` clareadas em direção ao `text` até 5.5:1 sobre o fundo e 4.5:1 sobre a superfície; `primary` e `secondary` ficam intactos para bordas e brilho. No Osaka Jade isso levanta o verde #509475 para #7aa984 nos títulos; no Tokyo Night nada muda. Terminal: fundo ← dark_background, texto ← foreground, ANSI 30–37 ← background, red, green, yellow, blue, magenta, cyan, foreground; 90–97 ← muted, bright_*, bright_foreground; linha destacada ← selection.
 
 Temas incluídos: `tokyo-night` e `osaka-jade`.
 
