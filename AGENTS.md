@@ -39,7 +39,7 @@ Você é o agente de programação de um aluno. Este repositório gera vídeos d
 4. Na cena `terminal`, `props.steps` escolhe um subconjunto de ids; sem ele, todos os passos entram.
 
 ### 4. Conferir quadros antes do render completo
-1. `npm run check -- videos/<slug>`: lint + runtime + layout + movimento + contraste. Corrija todo erro antes de seguir.
+1. `npm run check -- videos/<slug>`: lint + runtime + layout + movimento + contraste + portões de qualidade do kit (abaixo). Corrija todo erro antes de seguir.
 2. `npm run snapshot -- videos/<slug>`: quadros em `build/<slug>/snapshots/` (contact-sheet.jpg e phone-sheet-360.png). Olhe os dois; texto ilegível a 360 px é defeito.
 3. `npm run preview -- videos/<slug>`: render em 960x540, rápido.
 4. Só então `npm run render -- videos/<slug>`. Cenas de `videos/<slug>/scenes/` passam pelos mesmos `check` e `snapshot`. Para olhar momentos específicos, use `npm run snapshot -- videos/<slug> --at 1,2.6,...` (segundos). Nunca diga que conferiu um render sem ter olhado os snapshots.
@@ -67,6 +67,18 @@ Você é o agente de programação de um aluno. Este repositório gera vídeos d
 - Não leia nem envie arquivos fora deste repositório. Não instale pacotes além de `npm ci`.
 - `npm run update` baixa arquivos do kit da release pública `oros-data/motion-kit`. Rode só quando o aluno pedir explicitamente; mostre o resultado do modo de teste (sem `--apply`) antes de aplicar e não use outra origem. Depois de aplicar, revise o `git diff` com o aluno (inclusive deste arquivo) antes de commitar. Detalhes em `docs/update.md`.
 - Nunca altere remotes do git (`git remote`) nem faça `git push` para um repositório que o aluno não criou a partir do template. Nunca rode `gh repo create/edit` nem torne o repositório público; se o aluno pedir, explique o risco e peça confirmação por escrito no chat.
+
+## Portões de qualidade do `check`
+
+`tools/gates.mjs` mede o vídeo num navegador sem cabeça (amostra a cada 0,25 s) e imprime `ERRO` (falha o check) ou `AVISO`, com cena, tempo e elemento. Regras e correções completas em `docs/scenes.md`.
+
+- `overflow` (erro): texto ou caixa fora do quadro 1920x1080, da moldura desenhada ou do contêiner. Encurte o texto ou reduza a fonte.
+- `empty` (erro): mais de 1,0 s sem texto nem gráfico visível dentro da cena. Antecipe um elemento ou encurte `seconds`.
+- `small-text` (aviso abaixo de 18 px; erro abaixo de 14 px no quadro de 1920 px, o que são 3,4 e 2,6 px num celular de 360 px): aumente a fonte.
+- `presenter` (erro): elemento na região do apresentador. Mova-o.
+- `long-word` (erro; aviso a partir de 85% da largura): palavra sem espaço que não quebra e passa do contêiner. Troque ou encurte.
+- Aceitar de propósito, só com justificativa, na cena em `video.json`: `"ignore": [{"rule": "small-text", "reason": "rótulo decorativo"}]`. Sem `reason` (mínimo 8 caracteres) o check falha. Nunca silencie para passar sem olhar o snapshot.
+- Limites em `video.json`: `"gates": {"emptySeconds": 1.0, "minFontPx": 18}`.
 
 ## Ciclo de validação
 

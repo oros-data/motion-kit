@@ -50,6 +50,27 @@ Para uma cena que o kit não tem, crie `videos/<slug>/scenes/<nome>.html` (minú
 
 Canvas 1920x1080. O canto inferior direito (x 1492–1848, y 830–1030) fica livre para a câmera do apresentador em todas as cenas. HUD no topo (nome // título à esquerda, tagline à direita) e barra de progresso embaixo são do kit, não da cena.
 
+## Portões de qualidade do `npm run check`
+
+O `check` roda, depois do lint do HyperFrames, `tools/gates.mjs`: monta as cenas num navegador sem cabeça, posiciona a timeline de cada cena a cada 0,25 s (todo o vídeo de 40 s leva cerca de 1 s) e mede o que está visível. Considera só elementos com opacidade acima de 5% (texto em entrada ou saída, com opacidade abaixo de 95%, só entra nas regras de apresentador e fonte). O HUD e a barra de progresso são do kit e não entram. Cada achado diz cena, tempo e elemento, e o resultado ERRO falha o check.
+
+| regra | nível | dispara quando | o que fazer |
+|---|---|---|---|
+| `overflow` | erro | texto ou caixa passa mais de 2 px da borda do quadro 1920x1080, da moldura desenhada em SVG (como a do `logo` e do `title`) ou de um contêiner com fundo, borda ou `overflow` cortando | encurte o texto (a `tagline` do `logo` cabe em cerca de 30 caracteres), reduza a fonte ou a largura, quebre a linha |
+| `empty` | erro | uma janela maior que `gates.emptySeconds` (padrão 1,0 s) em que a cena não mostra nenhum texto nem elemento gráfico | faça um elemento entrar antes, divida o conteúdo ou reduza `seconds` |
+| `small-text` | aviso abaixo de `gates.minFontPx` (padrão 18 px); erro abaixo de 14 px | tamanho renderizado da fonte (com `scale` aplicado) menor que o mínimo | aumente a fonte; um celular mostra 1920 px em 360 px (fator 0,1875), então 18 px viram 3,4 px e 14 px viram 2,6 px, o limite em que até texto em negrito vira borrão. 18 px é o menor rótulo das cenas do kit |
+| `presenter` | erro | texto, caixa, imagem ou forma gráfica entra em x 1492–1848, y 830–1030 | mova o elemento; veja a região com `--variables '{"debugSafe":true}'` |
+| `long-word` | erro; aviso quando a palavra ocupa 85% do contêiner | palavra ou string sem espaço mais larga que o contêiner, que não consegue quebrar (URLs, hashes, termos longos) | troque, abrevie ou aumente o contêiner; `overflow-wrap: anywhere` já quebra e não dispara |
+
+Para aceitar um achado de propósito, adicione à cena em `video.json` uma entrada justificada. Sem `reason` (mínimo 8 caracteres) ou com regra inexistente o check falha, e o achado aparece como `SILENCIADO` com o motivo:
+
+```json
+{ "id": "rodape", "scene": "callout", "seconds": 5, "props": {...},
+  "ignore": [{ "rule": "small-text", "reason": "rodapé legal exigido, não precisa ser lido no celular" }] }
+```
+
+Limites do vídeo inteiro, também em `video.json`: `"gates": { "emptySeconds": 1.0, "minFontPx": 18 }`.
+
 ## Ver todas as cenas
 
 Monte um `video.json` com uma cena de cada (o agente sabe fazer isso a partir desta tabela) e rode `npm run snapshot -- videos/<slug>`.
