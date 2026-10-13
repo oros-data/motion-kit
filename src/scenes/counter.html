@@ -1,0 +1,58 @@
+<template>
+  <style>
+    /*__FONTS__*/
+    [data-composition-id="__ID__"] { position: absolute; inset: 0; }
+    [data-composition-id="__ID__"] .fx { position: absolute; inset: 0; opacity: 0; }
+    [data-composition-id="__ID__"] .kicker { position: absolute; left: 140px; top: 130px; font-family: var(--font-mono); font-size: 25px; letter-spacing: 4px; font-weight: 700; color: var(--aside); }
+    [data-composition-id="__ID__"] h2 { position: absolute; left: 140px; top: 172px; width: 1500px; font-size: 64px; line-height: 1.08; font-weight: 800; color: var(--concept); }
+    [data-composition-id="__ID__"] .panel { position: absolute; top: 330px; height: 450px; border: 2px solid var(--line); border-top: 6px solid var(--primary); border-radius: 6px; background: color-mix(in srgb, var(--surface) 85%, var(--bg)); padding: 36px 44px; opacity: 0; overflow: hidden; }
+    [data-composition-id="__ID__"] .k { font-family: var(--font-mono); font-size: 26px; letter-spacing: 4px; font-weight: 700; color: var(--muted); }
+    [data-composition-id="__ID__"] .num { font-size: 190px; line-height: 1; font-weight: 800; color: var(--primary); margin-top: 18px; letter-spacing: -4px; white-space: nowrap; }
+    [data-composition-id="__ID__"] .n3 .num { font-size: 130px; }
+    [data-composition-id="__ID__"] .label { font-size: 42px; line-height: 1.12; font-weight: 800; color: var(--text); margin-top: 8px; }
+    [data-composition-id="__ID__"] .note { font-size: 30px; line-height: 1.35; color: var(--muted); margin-top: 16px; }
+    [data-composition-id="__ID__"] .bar { position: absolute; left: 44px; right: 44px; bottom: 34px; height: 8px; background: var(--line); }
+    [data-composition-id="__ID__"] .bar i { display: block; height: 100%; background: var(--primary); transform-origin: 0 50%; }
+  </style>
+  <div data-composition-id="__ID__" data-width="1920" data-height="1080">
+    <div class="fx">
+      <div class="kicker"></div>
+      <h2></h2>
+    </div>
+    <script>
+      (() => {
+        const item = window.KIT.items["__ID__"];
+        const p = item.props;
+        const root = document.querySelector('[data-composition-id="__ID__"]');
+        const $ = (s) => root.querySelector(s);
+        const fx = $(".fx");
+        $(".kicker").textContent = p.kicker || "";
+        $("h2").textContent = p.headline || "";
+        const stats = (p.stats || []).slice(0, 3);
+        const gap = 40, width = (1640 - gap * (stats.length - 1)) / stats.length;
+        const tl = gsap.timeline({ paused: true });
+        K.fade(tl, fx, item.seconds, 14 / K.fps);
+        stats.forEach((s, i) => {
+          const panel = K.el("div", "panel" + (stats.length === 3 ? " n3" : ""));
+          panel.style.left = (140 + i * (width + gap)) + "px";
+          panel.style.width = width + "px";
+          const num = K.el("div", "num");
+          const fill = K.el("i");
+          const bar = K.el("div", "bar");
+          bar.appendChild(fill);
+          panel.append(K.el("div", "k", s.kicker || ""), num, K.el("div", "label", s.label || ""), K.el("div", "note", s.note || ""), bar);
+          fx.appendChild(panel);
+          const decimals = s.decimals || 0;
+          const render = (v) => { num.textContent = (s.prefix || "") + v.toFixed(decimals) + (s.suffix || ""); };
+          const val = { v: 0 };
+          render(0);
+          const t0 = 0.4 + i * 0.5;
+          tl.fromTo(panel, { opacity: 0, y: 36 }, { opacity: 1, y: 0, duration: 0.6, ease: "kitOut", immediateRender: true }, t0);
+          tl.to(val, { v: s.value, duration: 1.6, ease: "power2.out", onUpdate: () => render(val.v) }, t0 + 0.2);
+          tl.fromTo(fill, { scaleX: 0 }, { scaleX: Math.min(1, s.value / (s.max || s.value)), duration: 1.6, ease: "power2.out", immediateRender: true }, t0 + 0.2);
+        });
+        window.__timelines["__ID__"] = tl;
+      })();
+    </script>
+  </div>
+</template>

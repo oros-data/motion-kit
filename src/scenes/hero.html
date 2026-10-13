@@ -1,0 +1,58 @@
+<template>
+  <style>
+    /*__FONTS__*/
+    [data-composition-id="__ID__"] { position: absolute; inset: 0; }
+    [data-composition-id="__ID__"] .fx { position: absolute; inset: 0; opacity: 0; }
+    [data-composition-id="__ID__"] .mark { position: absolute; right: 90px; top: 150px; opacity: 0; }
+    [data-composition-id="__ID__"] .mark .logo { opacity: .12; }
+    [data-composition-id="__ID__"] .col { position: absolute; left: 170px; top: 190px; width: 1500px; }
+    [data-composition-id="__ID__"] .eyebrow { display: flex; align-items: center; gap: 22px; font-family: var(--font-mono); font-size: 26px; letter-spacing: 6px; color: var(--muted); font-weight: 700; opacity: 0; }
+    [data-composition-id="__ID__"] .eyebrow i { display: block; width: 52px; height: 3px; background: var(--primary); }
+    [data-composition-id="__ID__"] .ln { font-size: 120px; line-height: 1.12; font-weight: 800; color: var(--text); opacity: 0; letter-spacing: -2px; margin-top: 4px; }
+    [data-composition-id="__ID__"] .ln.first { margin-top: 44px; }
+    [data-composition-id="__ID__"] .slab { display: inline-block; background: var(--text); color: var(--bg); padding: 0 30px 6px; margin-top: 10px; }
+    [data-composition-id="__ID__"] .cursor { display: inline-block; width: 36px; height: 92px; background: var(--primary); margin-left: 14px; vertical-align: -6px; }
+    [data-composition-id="__ID__"] .sub { font-size: 38px; line-height: 1.45; color: var(--text); margin-top: 48px; max-width: 1300px; opacity: 0; }
+    [data-composition-id="__ID__"] .sub b { color: var(--concept); }
+  </style>
+  <div data-composition-id="__ID__" data-width="1920" data-height="1080">
+    <div class="fx">
+      <div class="mark"></div>
+      <div class="col">
+        <div class="eyebrow"><i></i><span></span></div>
+        <div class="lines"></div>
+        <div class="sub"></div>
+      </div>
+    </div>
+    <script>
+      (() => {
+        const item = window.KIT.items["__ID__"];
+        const p = item.props;
+        const root = document.querySelector('[data-composition-id="__ID__"]');
+        const $ = (s) => root.querySelector(s);
+        if (p.logo === true) $(".mark").appendChild(K.logo(420));
+        $(".eyebrow span").textContent = p.eyebrow || "";
+        const lines = (p.lines || []).map((text, i) => {
+          const ln = K.el("div", "ln" + (i === 0 ? " first" : ""));
+          if (i === p.accent) {
+            const slab = K.el("span", "slab", text);
+            ln.cursor = slab.appendChild(K.el("span", "cursor"));
+            ln.appendChild(slab);
+          } else ln.textContent = text;
+          $(".lines").appendChild(ln);
+          return ln;
+        });
+        (p.sub || "").split(/\*\*(.+?)\*\*/).forEach((part, i) => $(".sub").appendChild(i % 2 ? K.el("b", "", part) : document.createTextNode(part)));
+        const tl = gsap.timeline({ paused: true });
+        K.fade(tl, $(".fx"), item.seconds, 10 / K.fps);
+        tl.fromTo($(".mark"), { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 1.4, ease: "kitOut", immediateRender: true }, 0.1);
+        tl.fromTo($(".eyebrow"), { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.5, ease: "power3.out", immediateRender: true }, 0.1);
+        lines.forEach((ln, i) => tl.fromTo(ln, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.55, ease: "kitOut", immediateRender: true }, 0.45 + i * 0.5));
+        const cur = lines.find((l) => l.cursor);
+        if (cur) for (let k = 0; k < 8; k++) tl.set(cur.cursor, { opacity: k % 2 ? 0 : 1 }, 1.9 + k * 0.28);
+        tl.fromTo($(".sub"), { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out", immediateRender: true }, 0.45 + lines.length * 0.5);
+        window.__timelines["__ID__"] = tl;
+      })();
+    </script>
+  </div>
+</template>

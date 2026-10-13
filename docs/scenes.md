@@ -13,8 +13,17 @@ Cada cena é um arquivo HTML e uma entrada em `video.json`: `{"id": "...", "scen
 | `flow` | 2 a 4 etapas ligadas por setas | `kicker`, `headline`, `steps: [{label, sub, role?}]`, `footer` |
 | `terminal` | terminal com saída real do `transcript.json` e diagrama de lugares sincronizado | `prompt`, `window_title`, `steps: [ids]` (subconjunto), `transcript` (arquivo), `places: [{label, role?}]`, `labels: {step, exit, no_output, tag, footer}` |
 | `closing` | encerramento: logo, kicker, linhas de resumo, próximo passo, tagline | `kicker`, `lines: [...]`, `next`, `tagline`, `logo: false` |
+| `hero` | abertura grande: eyebrow, linhas gigantes (uma delas em placa com cursor piscando) e subtítulo | `eyebrow`, `lines: [...]` (cerca de 18 caracteres por linha), `accent` (índice da linha em placa), `sub` (`**trecho**` em destaque), `logo: true` para a marca d'água do logo |
+| `hub` | diagrama de hub: fontes à esquerda, nó central e destinos à direita, com pontos viajando pelas linhas | `kicker`, `headline`, `sources: [...]` (1 a 5), `targets: [...]` (1 a 4), `center` (rótulo acima do nó), `footer` (`**trecho**` em destaque), `logo: false` para trocar o logo do nó por `name` (padrão: nome da identidade); rótulos até cerca de 16 caracteres |
+| `counter` | 1 a 3 contadores animados, cada um com uma barra de progresso | `kicker`, `headline`, `stats: [{kicker, value, prefix?, suffix?, decimals?, max?, label, note}]`; a barra enche até `value / max` (sem `max`, enche toda) |
+| `proof` | mural de prova: título e 1 a 3 cartões com nome e afirmação, com imagem opcional | `kicker`, `headline`, `lead`, `cards: [{name, text, image?}]`; `image` é um arquivo em `assets/` (por exemplo `assets/parceiro.png`) |
+| `chart` | gráfico de barras e linhas, desenhado em escala a partir dos dados | `kicker`, `headline`, `categories: [...]`, `series: [{label, values: [...], kind?, role?, labels?}]`, `kind` (`bars` ou `line`, padrão `bars`), `unit`, `prefix`, `decimals`, `footer` |
 
 `role` aceita `concept`, `aside`, `base`, `error` (mapeados em `identity.roles`) ou um papel de cor (`primary`, `secondary`, `muted`, `text`, `danger`).
+
+## Chart: dados e escala
+
+`series[].values` tem um número por item de `categories`, todos maiores ou iguais a zero. Todas as séries usam uma única escala, de 0 até um teto arredondado acima do maior valor, então barras e linhas se comparam diretamente. `kind` na série vence o `kind` da cena, o que permite barras com uma linha de meta por cima. A cor vem de `role` (padrão: `concept`, `aside`, `text` na ordem das séries). Cada barra mostra o valor; os pontos de uma linha só mostram o valor quando não há barras na cena, e `labels: true` ou `false` na série muda isso. A legenda aparece com mais de uma série. Use até cerca de 8 categorias e até 3 séries; rótulos de categoria curtos (até cerca de 10 caracteres).
 
 ## Terminal: o que vem de `steps.json`
 

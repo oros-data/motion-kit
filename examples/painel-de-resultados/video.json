@@ -1,0 +1,12 @@
+{
+  "title": "Painel de resultados",
+  "hud": { "right": "EXEMPLO · CENAS DE DADOS" },
+  "scenes": [
+    { "id": "abertura", "scene": "hero", "seconds": 6, "props": { "eyebrow": "RESULTADOS DO TRIMESTRE", "lines": ["Menos etapas.", "Mais entregas."], "accent": 1, "sub": "Um resumo em **três** números e um gráfico." } },
+    { "id": "integracao", "scene": "hub", "seconds": 7, "props": { "kicker": "COMO FUNCIONA", "headline": "Várias fontes entram, vários destinos saem.", "sources": ["PLANILHA", "FORMULÁRIO", "API", "ARQUIVO CSV"], "center": "DADOS", "targets": ["RELATÓRIO", "PAINEL", "ALERTA"], "footer": "Tudo passa por **um único lugar**.", "logo": false, "name": "KIT" } },
+    { "id": "numeros", "scene": "counter", "seconds": 6, "props": { "kicker": "EM NÚMEROS", "headline": "O que mudou em três meses.", "stats": [{ "kicker": "ENTREGAS", "value": 128, "label": "vídeos publicados", "note": "contra 40 no trimestre anterior." }, { "kicker": "SATISFAÇÃO", "value": 94, "suffix": "%", "max": 100, "label": "avaliações positivas", "note": "de 312 respostas." }] } },
+    { "id": "grafico", "scene": "chart", "seconds": 8, "props": { "kicker": "EVOLUÇÃO", "headline": "Entregas por mês.", "categories": ["JAN", "FEV", "MAR", "ABR", "MAI", "JUN"], "series": [{ "label": "Entregas", "values": [12, 18, 26, 31, 42, 55] }, { "label": "Meta", "kind": "line", "labels": false, "values": [15, 20, 25, 35, 40, 50] }], "footer": "fonte: dados de exemplo" } },
+    { "id": "depoimentos", "scene": "proof", "seconds": 6, "props": { "kicker": "QUEM USA", "headline": "Equipes que já adotaram.", "lead": "Três relatos curtos, sem enfeite.", "cards": [{ "name": "Equipe A", "text": "Reduziu o retrabalho pela metade." }, { "name": "Equipe B", "text": "Publica toda semana, sem atraso." }, { "name": "Equipe C", "text": "Aprovou o roteiro em um dia." }] } },
+    { "id": "fim", "scene": "closing", "seconds": 4, "props": { "kicker": "FIM", "lines": ["Seus dados, seu vídeo."], "next": "troque os números e renderize de novo" } }
+  ]
+}

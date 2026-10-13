@@ -1,0 +1,130 @@
+<template>
+  <style>
+    /*__FONTS__*/
+    [data-composition-id="__ID__"] { position: absolute; inset: 0; }
+    [data-composition-id="__ID__"] .fx { position: absolute; inset: 0; opacity: 0; }
+    [data-composition-id="__ID__"] .kicker { position: absolute; left: 140px; top: 130px; font-family: var(--font-mono); font-size: 25px; letter-spacing: 4px; font-weight: 700; color: var(--aside); }
+    [data-composition-id="__ID__"] h2 { position: absolute; left: 140px; top: 172px; width: 1500px; font-size: 64px; line-height: 1.08; font-weight: 800; color: var(--concept); }
+    [data-composition-id="__ID__"] svg.plot { position: absolute; inset: 0; width: 1920px; height: 1080px; }
+    [data-composition-id="__ID__"] .grid { stroke: var(--line); stroke-width: 2; }
+    [data-composition-id="__ID__"] .axis { stroke: var(--muted); stroke-width: 3; }
+    [data-composition-id="__ID__"] .tick { position: absolute; left: 90px; width: 100px; text-align: right; font-family: var(--font-mono); font-size: 26px; color: var(--muted); transform: translateY(-50%); }
+    [data-composition-id="__ID__"] .cat { position: absolute; text-align: center; font-family: var(--font-mono); font-size: 28px; font-weight: 700; color: var(--text); transform: translateX(-50%); }
+    [data-composition-id="__ID__"] .bar { position: absolute; transform-origin: 50% 100%; border-radius: 4px 4px 0 0; }
+    [data-composition-id="__ID__"] .val { position: absolute; font-family: var(--font-mono); font-size: 30px; font-weight: 700; color: var(--text); transform: translateX(-50%); white-space: nowrap; opacity: 0; }
+    [data-composition-id="__ID__"] .legend { position: absolute; left: 200px; top: 800px; display: flex; gap: 40px; font-size: 30px; color: var(--text); }
+    [data-composition-id="__ID__"] .legend span { display: flex; align-items: center; gap: 12px; }
+    [data-composition-id="__ID__"] .legend i { display: block; width: 28px; height: 28px; border-radius: 4px; }
+    [data-composition-id="__ID__"] .foot { position: absolute; left: 140px; top: 880px; width: 1300px; font-size: 30px; color: var(--muted); }
+  </style>
+  <div data-composition-id="__ID__" data-width="1920" data-height="1080">
+    <div class="fx">
+      <div class="kicker"></div>
+      <h2></h2>
+      <svg class="plot" viewBox="0 0 1920 1080"></svg>
+      <div class="legend"></div>
+      <div class="foot"></div>
+    </div>
+    <script>
+      (() => {
+        const item = window.KIT.items["__ID__"];
+        const p = item.props;
+        const root = document.querySelector('[data-composition-id="__ID__"]');
+        const $ = (s) => root.querySelector(s);
+        const fx = $(".fx"), svg = $(".plot");
+        const NS = "http://www.w3.org/2000/svg";
+        const series = p.series || [];
+        const cats = p.categories || [];
+        const fmt = new Intl.NumberFormat(window.KIT.identity.language, { maximumFractionDigits: p.decimals || 0, minimumFractionDigits: p.decimals || 0 });
+        const text = (v) => (p.prefix || "") + fmt.format(v) + (p.unit || "");
+        $(".kicker").textContent = p.kicker || "";
+        $("h2").textContent = p.headline || "";
+        $(".foot").textContent = p.footer || "";
+
+        const X0 = 200, X1 = 1780, Y0 = 310, Y1 = 730;
+        const max = Math.max(...series.flatMap((s) => s.values), 0) || 1;
+        const rough = max / 4, mag = Math.pow(10, Math.floor(Math.log10(rough)));
+        const step = [1, 2, 2.5, 5, 10].map((m) => m * mag).find((s) => s >= rough);
+        const top = Math.ceil(max / step) * step;
+        const yOf = (v) => Y1 - (v / top) * (Y1 - Y0);
+        const band = (X1 - X0) / Math.max(1, cats.length);
+        const cx = (i) => X0 + band * (i + 0.5);
+        const color = (s, i) => `var(--${s.role || ["concept", "aside", "text"][i % 3]})`;
+        const make = (tag, attrs) => { const n = document.createElementNS(NS, tag); for (const k in attrs) n.setAttribute(k, attrs[k]); svg.appendChild(n); return n; };
+
+        for (let v = 0; v <= top + step / 2; v += step) {
+          make("line", { x1: X0, x2: X1, y1: yOf(v), y2: yOf(v), class: v === 0 ? "axis" : "grid" });
+          const tick = K.el("div", "tick", fmt.format(v));
+          tick.style.top = yOf(v) + "px";
+          fx.appendChild(tick);
+        }
+        cats.forEach((c, i) => {
+          const cat = K.el("div", "cat", c);
+          cat.style.left = cx(i) + "px"; cat.style.top = (Y1 + 22) + "px"; cat.style.width = band + "px";
+          fx.appendChild(cat);
+        });
+
+        const kinds = series.map((s) => s.kind || p.kind || "bars");
+        const barSeries = series.map((s, i) => i).filter((i) => kinds[i] === "bars");
+        const bw = Math.min(120, (band * 0.7) / Math.max(1, barSeries.length));
+        const tl = gsap.timeline({ paused: true });
+        K.fade(tl, fx, item.seconds, 14 / K.fps);
+        const bars = [], vals = [];
+        series.forEach((s, si) => {
+          if (kinds[si] === "bars") {
+            const slot = barSeries.indexOf(si);
+            s.values.forEach((v, i) => {
+              const x = cx(i) - (barSeries.length * bw) / 2 + slot * bw;
+              const bar = K.el("div", "bar");
+              bar.style.cssText += `;left:${x + 4}px;width:${bw - 8}px;top:${yOf(v)}px;height:${Y1 - yOf(v)}px;background:${color(s, si)}`;
+              const val = K.el("div", "val", text(v));
+              if (s.labels === false) val.style.display = "none";
+              const inside = Y1 - yOf(v) >= 60;
+              if (inside) val.style.color = "var(--bg)";
+              val.style.left = (x + bw / 2) + "px"; val.style.top = (inside ? Y1 - 46 : yOf(v) - 42) + "px";
+              fx.append(bar, val);
+              bars.push({ bar, i, slot }); vals.push({ val, i, slot });
+            });
+          }
+        });
+        const lines = [];
+        series.forEach((s, si) => {
+          if (kinds[si] !== "line") return;
+          const c = color(s, si);
+          const labeled = s.labels ?? !barSeries.length;
+          const path = make("polyline", { points: s.values.map((v, i) => `${cx(i)},${yOf(v)}`).join(" "), fill: "none", stroke: c, "stroke-width": 6, "stroke-linejoin": "round", "stroke-linecap": "round", pathLength: 1, "stroke-dasharray": 1, "stroke-dashoffset": 1 });
+          const dots = s.values.map((v, i) => {
+            const dot = make("circle", { cx: cx(i), cy: yOf(v), r: 11, fill: c, opacity: 0 });
+            const val = K.el("div", "val", text(v));
+            val.style.left = cx(i) + "px"; val.style.top = (yOf(v) - 52) + "px";
+            if (!labeled) val.style.display = "none";
+            fx.appendChild(val);
+            return { dot, val };
+          });
+          lines.push({ path, dots });
+        });
+        const legend = $(".legend");
+        if (series.length > 1) series.forEach((s, i) => {
+          const sw = K.el("i");
+          sw.style.background = color(s, i);
+          const item = K.el("span");
+          item.append(sw, document.createTextNode(s.label || ""));
+          legend.appendChild(item);
+        });
+
+        bars.forEach((b) => tl.fromTo(b.bar, { scaleY: 0 }, { scaleY: 1, duration: 0.8, ease: "kitOut", immediateRender: true }, 0.5 + b.i * 0.12 + b.slot * 0.05));
+        vals.forEach((v) => tl.to(v.val, { opacity: 1, duration: 0.3 }, 1.0 + v.i * 0.12 + v.slot * 0.05));
+        lines.forEach((l, li) => {
+          const t0 = 0.8 + li * 0.3;
+          tl.to(l.path, { attr: { "stroke-dashoffset": 0 }, duration: 1.4, ease: "power2.inOut" }, t0);
+          l.dots.forEach((d, i) => {
+            const t = t0 + 1.4 * (cats.length > 1 ? i / (cats.length - 1) : 1);
+            tl.to(d.dot, { opacity: 1, duration: 0.2 }, t);
+            tl.to(d.val, { opacity: 1, duration: 0.3 }, t);
+          });
+        });
+        window.__timelines["__ID__"] = tl;
+      })();
+    </script>
+  </div>
+</template>
