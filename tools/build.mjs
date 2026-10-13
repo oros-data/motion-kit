@@ -1,11 +1,23 @@
 import { copyFileSync, cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
-import { basename, join, resolve } from 'node:path';
+import { basename, join, relative, resolve } from 'node:path';
 import { contrastReport, cssVariables, fontFaces, loadIdentity, textRoles } from './identity.mjs';
 
 const SCENE_DIR = 'src/scenes';
 
 function fail(message) {
   throw new Error(message);
+}
+
+function sceneSource(root, videoDir, name, warned) {
+  if (typeof name !== 'string' || !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(name)) return null;
+  const own = join(videoDir, 'scenes', `${name}.html`);
+  const shared = join(root, SCENE_DIR, `${name}.html`);
+  if (!existsSync(own)) return existsSync(shared) ? shared : null;
+  if (existsSync(shared) && !warned.has(name)) {
+    warned.add(name);
+    console.log(`  aviso: ${relative(root, own)} substitui a cena "${name}" do kit (${SCENE_DIR}/${name}.html) neste vídeo; renomeie o arquivo se não for essa a intenção`);
+  }
+  return own;
 }
 
 function resolveTerminal(root, videoDir, item) {
@@ -49,12 +61,15 @@ export function build(root, videoDir, options = {}) {
   if (!Array.isArray(video.scenes) || !video.scenes.length) fail('video.json: "scenes" precisa de pelo menos uma cena');
   const items = {};
   const order = [];
+  const sources = {};
+  const warned = new Set();
   let cursor = 0;
   for (const scene of video.scenes) {
     if (!scene.id || !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(scene.id)) fail(`cena sem "id" válido (minúsculas e hífens): ${JSON.stringify(scene)}`);
     if (items[scene.id]) fail(`id de cena repetido: ${scene.id}`);
-    const source = join(root, SCENE_DIR, `${scene.scene}.html`);
-    if (!existsSync(source)) fail(`cena "${scene.id}": tipo "${scene.scene}" não existe em ${SCENE_DIR}/`);
+    const source = sceneSource(root, videoDir, scene.scene, warned);
+    if (!source) fail(`cena "${scene.id}": tipo "${scene.scene}" não existe em ${relative(root, join(videoDir, 'scenes'))}/ nem em ${SCENE_DIR}/`);
+    sources[scene.id] = source;
     const item = { id: scene.id, scene: scene.scene, props: scene.props || {}, seconds: scene.seconds };
     if (scene.scene === 'terminal') Object.assign(item, resolveTerminal(root, videoDir, item));
     if (typeof item.seconds !== 'number' || item.seconds <= 0) fail(`cena "${scene.id}": "seconds" obrigatório`);
@@ -82,8 +97,7 @@ export function build(root, videoDir, options = {}) {
   writeFileSync(join(out, 'data.js'), `window.KIT = ${JSON.stringify(data)};\n`);
 
   for (const id of order) {
-    const item = items[id];
-    const html = readFileSync(join(root, SCENE_DIR, `${item.scene}.html`), 'utf8').replaceAll('__ID__', id).replace('/*__FONTS__*/', faces);
+    const html = readFileSync(sources[id], 'utf8').replaceAll('__ID__', id).replace('/*__FONTS__*/', faces);
     writeFileSync(join(out, 'compositions', `${id}.html`), html);
   }
   if (existsSync(join(videoDir, 'assets'))) cpSync(join(videoDir, 'assets'), join(out, 'assets'), { recursive: true });

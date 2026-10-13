@@ -1,6 +1,6 @@
 # Catálogo de cenas
 
-Cada cena é um arquivo em `src/scenes/` e uma entrada em `video.json`: `{"id": "...", "scene": "<nome>", "seconds": N, "props": {...}}`. Cores e fontes vêm sempre da identidade. Imagens do vídeo ficam em `videos/<slug>/assets/` e as cenas as usam como `assets/x.png`. Textos omitidos usam `voice.sample_copy` e `voice.tagline` da identidade.
+Cada cena é um arquivo HTML e uma entrada em `video.json`: `{"id": "...", "scene": "<nome>", "seconds": N, "props": {...}}`. As cenas do kit ficam em `src/scenes/`; as cenas próprias de um vídeo ficam em `videos/<slug>/scenes/` (veja abaixo). Cores e fontes vêm sempre da identidade. Imagens do vídeo ficam em `videos/<slug>/assets/` e as cenas as usam como `assets/x.png`. Textos omitidos usam `voice.sample_copy` e `voice.tagline` da identidade.
 
 | cena | para quê | props |
 |---|---|---|
@@ -32,6 +32,10 @@ Cada passo começa na raiz do repositório descartável e o `cd` não persiste e
 Os lugares vêm de `props.places` na cena; sem `places`, só o terminal e o callout aparecem.
 
 A janela do terminal usa a paleta escura do tema mesmo em identidades claras (tokens `--term-*`).
+
+## Cenas próprias do vídeo
+
+Para uma cena que o kit não tem, crie `videos/<slug>/scenes/<nome>.html` (minúsculas e hífens) a partir de `src/scenes/closing.html` e use `"scene": "<nome>"` no `video.json`. O build procura primeiro em `videos/<slug>/scenes/` e depois em `src/scenes/`, então a cena viaja com o vídeo, passa pelos mesmos `check` e `snapshot` e não é tocada por `npm run update`. Para mudar uma cena do kit, copie-a para essa pasta com outro nome. Um arquivo com o mesmo nome de uma cena do kit a substitui só neste vídeo, e o build imprime um aviso. As regras da cena (template, `__ID__`, timeline pausada, tokens de cor e fonte) estão em `AGENTS.md`.
 
 ## Layout fixo
 

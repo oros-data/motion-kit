@@ -13,7 +13,8 @@
     "check": "node tools/kit.mjs check",
     "render": "node tools/kit.mjs render",
     "preview": "node tools/kit.mjs preview",
-    "smoke": "node tools/kit.mjs smoke"
+    "smoke": "node tools/kit.mjs smoke",
+    "update": "node tools/update.mjs"
   },
   "devDependencies": {
     "hyperframes": "0.8.142"
