@@ -35,7 +35,7 @@ Um vídeo pode usar qualquer combinação de cenas; a cena `terminal` é opciona
 | `npm run capture -- <pasta>` | roda `steps.json` em um repositório descartável e grava `transcript.json` |
 | `npm run build -- <pasta>` | compila identidade + vídeo em `build/<slug>/` |
 | `npm run dev -- <pasta>` | abre o Studio do HyperFrames no navegador (preview ao vivo) |
-| `npm run check -- <pasta>` | lint, runtime, layout, movimento e contraste |
+| `npm run check -- <pasta>` | lint, runtime, layout, movimento, contraste e portões de qualidade (texto fora do quadro, cena vazia, fonte pequena, apresentador, palavra longa; veja [docs/scenes.md](docs/scenes.md)) |
 | `npm run snapshot -- <pasta>` | quadros-chave + contact sheet + folha de 360 px |
 | `npm run preview -- <pasta>` | render em 960x540 |
 | `npm run render -- <pasta>` | render final 1920x1080 30 fps (CPU; `KIT_GPU=1` usa a GPU) |

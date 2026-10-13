@@ -175,6 +175,8 @@ const commands = {
     doBuild(dir);
     must(hf(['lint', buildDir(dir)]), 'lint');
     must(hf(['check', buildDir(dir), '--no-browser-gpu']), 'check');
+    const browser = spawnSync('npx', ['--yes', HF, 'browser', 'path'], { encoding: 'utf8', cwd: root, shell: process.platform === 'win32' });
+    must(sh('node', [join(root, 'tools', 'gates.mjs'), buildDir(dir), join(dir, 'video.json'), (browser.stdout || '').trim().split('\n').pop()]), 'gates de qualidade (texto fora do quadro, cena vazia, fonte pequena, apresentador, palavra longa)');
   },
 
   snapshot() {
