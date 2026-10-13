@@ -1,0 +1,95 @@
+<template>
+  <style>
+    /*__FONTS__*/
+    [data-composition-id="__ID__"] { position: absolute; inset: 0; }
+    [data-composition-id="__ID__"] .fx { position: absolute; inset: 0; opacity: 0; }
+    [data-composition-id="__ID__"] .kicker { position: absolute; left: 140px; top: 120px; font-family: var(--font-mono); font-size: 25px; letter-spacing: 4px; font-weight: 700; color: var(--aside); }
+    [data-composition-id="__ID__"] h2 { position: absolute; left: 140px; top: 160px; width: 1500px; font-size: 56px; line-height: 1.1; font-weight: 800; color: var(--concept); }
+    [data-composition-id="__ID__"] .box { position: absolute; width: 360px; height: 72px; display: flex; align-items: center; justify-content: center; padding: 0 12px; text-align: center; font-family: var(--font-mono); font-size: 27px; letter-spacing: 1px; font-weight: 700; background: color-mix(in srgb, var(--surface) 85%, var(--bg)); opacity: 0; }
+    [data-composition-id="__ID__"] .box.src { border: 2px solid var(--secondary); color: var(--text); }
+    [data-composition-id="__ID__"] .box.dst { border: 2px solid var(--primary); color: var(--primary); }
+    [data-composition-id="__ID__"] svg.wires { position: absolute; inset: 0; width: 1920px; height: 1080px; }
+    [data-composition-id="__ID__"] .wire { stroke-dasharray: 9 9; fill: none; stroke-width: 2.5; opacity: 0; }
+    [data-composition-id="__ID__"] .wire.l { stroke: var(--secondary); }
+    [data-composition-id="__ID__"] .wire.r { stroke: var(--primary); }
+    [data-composition-id="__ID__"] .pulse { fill: var(--primary); opacity: 0; }
+    [data-composition-id="__ID__"] .core { position: absolute; left: 820px; top: 400px; width: 280px; height: 280px; border-radius: 50%; border: 5px solid var(--primary); background: var(--surface); display: flex; align-items: center; justify-content: center; opacity: 0; }
+    [data-composition-id="__ID__"] .core .logo { color: var(--primary); }
+    [data-composition-id="__ID__"] .core .name { font-family: var(--font-mono); font-size: 34px; font-weight: 700; color: var(--primary); text-align: center; letter-spacing: 2px; padding: 0 24px; }
+    [data-composition-id="__ID__"] .halo { position: absolute; left: 790px; top: 370px; width: 340px; height: 340px; border-radius: 50%; border: 2px solid color-mix(in srgb, var(--primary) 40%, transparent); opacity: 0; }
+    [data-composition-id="__ID__"] .tag { position: absolute; left: 0; width: 1920px; top: 322px; text-align: center; font-family: var(--font-mono); font-size: 28px; letter-spacing: 5px; color: var(--muted); font-weight: 700; opacity: 0; }
+    [data-composition-id="__ID__"] .foot { position: absolute; left: 140px; top: 838px; width: 1280px; font-size: 34px; line-height: 1.4; color: var(--text); opacity: 0; }
+    [data-composition-id="__ID__"] .foot b { color: var(--concept); }
+  </style>
+  <div data-composition-id="__ID__" data-width="1920" data-height="1080">
+    <div class="fx">
+      <div class="kicker"></div>
+      <h2></h2>
+      <svg class="wires" viewBox="0 0 1920 1080"></svg>
+      <div class="halo"></div>
+      <div class="core"></div>
+      <div class="tag"></div>
+      <div class="foot"></div>
+    </div>
+    <script>
+      (() => {
+        const item = window.KIT.items["__ID__"];
+        const p = item.props;
+        const root = document.querySelector('[data-composition-id="__ID__"]');
+        const $ = (s) => root.querySelector(s);
+        const fx = $(".fx"), svg = $(".wires");
+        const NS = "http://www.w3.org/2000/svg";
+        $(".kicker").textContent = p.kicker || "";
+        $("h2").textContent = p.headline || "";
+        $(".tag").textContent = p.center || "";
+        (p.footer || "").split(/\*\*(.+?)\*\*/).forEach((part, i) => $(".foot").appendChild(i % 2 ? K.el("b", "", part) : document.createTextNode(part)));
+        if (p.logo === false) $(".core").appendChild(K.el("div", "name", p.name || window.KIT.identity.name));
+        else $(".core").appendChild(K.logo(150));
+        const cx = 960, cy = 540;
+        const place = (list, x, pitch, cls) => {
+          const top = cy - ((list.length - 1) * pitch + 72) / 2;
+          return list.map((label, i) => {
+            const b = K.el("div", "box " + cls, label);
+            b.style.left = x + "px"; b.style.top = (top + i * pitch) + "px";
+            fx.appendChild(b);
+            return { b, y: top + i * pitch + 36 };
+          });
+        };
+        const left = place(p.sources || [], 150, 96, "src");
+        const right = place(p.targets || [], 1410, 112, "dst");
+        const wires = [], pulses = [];
+        const wire = (x1, y1, x2, y2, cls) => {
+          const path = document.createElementNS(NS, "path");
+          path.setAttribute("d", `M${x1} ${y1} C ${(x1 + x2) / 2} ${y1}, ${(x1 + x2) / 2} ${y2}, ${x2} ${y2}`);
+          path.setAttribute("class", "wire " + cls);
+          svg.appendChild(path);
+          const dot = document.createElementNS(NS, "circle");
+          dot.setAttribute("r", "9"); dot.setAttribute("class", "pulse"); dot.setAttribute("cx", x1); dot.setAttribute("cy", y1);
+          svg.appendChild(dot);
+          wires.push(path); pulses.push({ dot, x1, y1, x2, y2 });
+        };
+        left.forEach((s) => wire(510, s.y, 818, cy, "l"));
+        right.forEach((s) => wire(1102, cy, 1408, s.y, "r"));
+        const tl = gsap.timeline({ paused: true });
+        K.fade(tl, fx, item.seconds, 14 / K.fps);
+        tl.fromTo($(".halo"), { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.8, ease: "kitOut", immediateRender: true }, 0.9);
+        tl.fromTo($(".core"), { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.7, ease: "kitOut", immediateRender: true }, 0.8);
+        tl.to($(".tag"), { opacity: 1, duration: 0.4 }, 1.2);
+        left.forEach((s, i) => tl.fromTo(s.b, { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.45, ease: "power3.out", immediateRender: true }, 0.2 + i * 0.12));
+        right.forEach((s, i) => tl.fromTo(s.b, { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.45, ease: "power3.out", immediateRender: true }, 1.9 + i * 0.12));
+        wires.forEach((w, i) => tl.to(w, { opacity: 1, duration: 0.4 }, 0.5 + (i < left.length ? i * 0.12 : (i - left.length) * 0.12 + 1.5)));
+        pulses.forEach((pl, i) => {
+          const isLeft = i < left.length;
+          const t0 = isLeft ? 1.5 + i * 0.15 : 2.6 + (i - left.length) * 0.15;
+          const pos = { u: 0 };
+          const bez = (u) => { const mx = (pl.x1 + pl.x2) / 2, v = 1 - u; return { x: v*v*v*pl.x1 + 3*v*v*u*mx + 3*v*u*u*mx + u*u*u*pl.x2, y: v*v*v*pl.y1 + 3*v*v*u*pl.y1 + 3*v*u*u*pl.y2 + u*u*u*pl.y2 }; };
+          tl.set(pl.dot, { opacity: 1 }, t0);
+          tl.to(pos, { u: 1, duration: 0.9, ease: "power1.inOut", onUpdate: () => { const q = bez(pos.u); pl.dot.setAttribute("cx", q.x); pl.dot.setAttribute("cy", q.y); } }, t0);
+          tl.set(pl.dot, { opacity: 0 }, t0 + 0.92);
+        });
+        tl.to($(".foot"), { opacity: 1, duration: 0.6 }, 3.3);
+        window.__timelines["__ID__"] = tl;
+      })();
+    </script>
+  </div>
+</template>

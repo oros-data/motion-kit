@@ -1,0 +1,53 @@
+<template>
+  <style>
+    /*__FONTS__*/
+    [data-composition-id="__ID__"] { position: absolute; inset: 0; }
+    [data-composition-id="__ID__"] .fx { position: absolute; inset: 0; opacity: 0; }
+    [data-composition-id="__ID__"] .kicker { position: absolute; left: 140px; top: 130px; font-family: var(--font-mono); font-size: 25px; letter-spacing: 4px; font-weight: 700; color: var(--aside); }
+    [data-composition-id="__ID__"] h2 { position: absolute; left: 140px; top: 172px; width: 1500px; font-size: 76px; line-height: 1.05; font-weight: 800; color: var(--concept); }
+    [data-composition-id="__ID__"] .lead { position: absolute; left: 140px; top: 295px; width: 1500px; font-size: 36px; line-height: 1.4; color: var(--text); opacity: 0; }
+    [data-composition-id="__ID__"] .wall { position: absolute; left: 140px; top: 440px; width: 1640px; display: flex; gap: 40px; }
+    [data-composition-id="__ID__"] .card { flex: 1; min-width: 0; min-height: 330px; background: color-mix(in srgb, var(--surface) 85%, var(--bg)); border: 2px solid var(--line); border-top: 6px solid var(--primary); border-radius: 6px; padding: 34px 40px; display: flex; gap: 32px; align-items: center; opacity: 0; }
+    [data-composition-id="__ID__"] .card img { width: 200px; height: 200px; object-fit: contain; flex: none; }
+    [data-composition-id="__ID__"] .card .n { font-size: 44px; font-weight: 800; color: var(--text); line-height: 1.1; }
+    [data-composition-id="__ID__"] .card .d { font-size: 32px; line-height: 1.35; color: var(--muted); margin-top: 14px; }
+  </style>
+  <div data-composition-id="__ID__" data-width="1920" data-height="1080">
+    <div class="fx">
+      <div class="kicker"></div>
+      <h2></h2>
+      <div class="lead"></div>
+      <div class="wall"></div>
+    </div>
+    <script>
+      (() => {
+        const item = window.KIT.items["__ID__"];
+        const p = item.props;
+        const root = document.querySelector('[data-composition-id="__ID__"]');
+        const $ = (s) => root.querySelector(s);
+        $(".kicker").textContent = p.kicker || "";
+        $("h2").textContent = p.headline || "";
+        $(".lead").textContent = p.lead || "";
+        const cards = (p.cards || []).slice(0, 3).map((c) => {
+          const card = K.el("div", "card");
+          if (c.image) {
+            const img = K.el("img");
+            img.src = c.image;
+            img.alt = c.name || "";
+            card.appendChild(img);
+          }
+          const box = K.el("div");
+          box.append(K.el("div", "n", c.name || ""), K.el("div", "d", c.text || ""));
+          card.appendChild(box);
+          $(".wall").appendChild(card);
+          return card;
+        });
+        const tl = gsap.timeline({ paused: true });
+        K.fade(tl, $(".fx"), item.seconds, 14 / K.fps);
+        tl.to($(".lead"), { opacity: 1, duration: 0.5 }, 0.5);
+        cards.forEach((c, i) => tl.fromTo(c, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, ease: "kitOut", immediateRender: true }, 1.2 + i * 0.6));
+        window.__timelines["__ID__"] = tl;
+      })();
+    </script>
+  </div>
+</template>
