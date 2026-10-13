@@ -29,7 +29,7 @@ Você é o agente de programação de um aluno. Este repositório gera vídeos d
 ### 2. Adicionar ou mudar uma cena
 - Mudar: edite `props` em `video.json`. Para mudar o HTML de uma cena do kit, copie `src/scenes/<nome>.html` para `videos/<slug>/scenes/` com outro nome e use esse nome em `video.json`; não edite `src/scenes/`.
 - Nova cena: crie `videos/<slug>/scenes/<nome>.html` (nome em minúsculas e hífens) copiando `src/scenes/closing.html` como base. O build procura a cena primeiro em `videos/<slug>/scenes/` e depois em `src/scenes/`; um nome igual ao de uma cena do kit a substitui só neste vídeo e o build avisa. Regras: um `<template>` com `<style>` (comece com `/*__FONTS__*/`), um `<div data-composition-id="__ID__" data-width="1920" data-height="1080">` e um `<script>` que lê `window.KIT.items["__ID__"]`, monta o DOM a partir de `item.props`, cria `gsap.timeline({ paused: true })` e registra `window.__timelines["__ID__"] = tl`. O build troca `__ID__` pelo id da cena.
-- Toda cor vem de `var(--primary)`, `--secondary`, `--text`, `--muted`, `--danger`, `--bg`, `--surface`, `--line`, `--concept`, `--aside`, `--base`, `--error`, `--term-*`, `--ansi-NN`. Toda fonte vem de `var(--font-display)` e `var(--font-mono)`.
+- Toda cor vem de `var(--primary)`, `--secondary`, `--text`, `--muted`, `--danger`, `--bg`, `--surface`, `--line`, `--concept`, `--aside`, `--base`, `--error`, `--term-*`, `--ansi-NN`. Toda fonte vem de `var(--font-display)` (títulos), `var(--font-body)` (texto corrido) e `var(--font-mono)` (terminal e rótulos).
 - Fique fora da região do apresentador: x 1492–1848, y 830–1030 (canto inferior direito). Mostre-a com `--variables '{"debugSafe":true}'` no render.
 
 ### 3. Capturar saída real do terminal (nunca invente saída)

@@ -1,5 +1,5 @@
-import { existsSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { basename, dirname, join } from 'node:path';
 
 export const ROLE_NAMES = ['background', 'surface', 'primary', 'secondary', 'muted', 'text', 'danger'];
 const ANSI_NAMES = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white'];
@@ -180,14 +180,53 @@ export function validateIdentity(root, identity) {
   const errors = [];
   validate(schema, identity, 'identity', schema.$defs, errors);
   if (errors.length) return errors;
-  for (const kind of ['display', 'mono']) {
-    for (const file of identity.fonts[kind].files) {
+  for (const kind of fontSlots(identity)) {
+    const font = identity.fonts[kind];
+    for (const file of font.files) {
       if (!existsSync(join(root, file.path))) errors.push(`fonts.${kind}: arquivo não encontrado: ${file.path}`);
+      else if (!font.license && !hasLicenseNote(root, font, file.path)) {
+        errors.push(`fonts.${kind}: sem licença para ${file.path}; coloque um arquivo de licença (OFL, LICENSE) ao lado da fonte ou registre "license" na fonte`);
+      }
     }
   }
   if (!existsSync(join(root, identity.logo.file))) errors.push(`logo.file: arquivo não encontrado: ${identity.logo.file}`);
   if (!existsSync(join(root, 'themes', identity.theme, 'colors.toml'))) errors.push(`theme: pasta themes/${identity.theme}/ sem colors.toml`);
   return errors;
+}
+
+export const FONT_SLOTS = ['display', 'body', 'mono'];
+
+export function fontSlots(identity) {
+  return FONT_SLOTS.filter((kind) => identity.fonts[kind]);
+}
+
+const alnum = (text) => text.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+function hasLicenseNote(root, font, path) {
+  const dir = dirname(path);
+  const shared = dir === 'src/fonts' || dir === 'brand/fonts';
+  const family = alnum(font.family);
+  return readdirSync(join(root, dir)).some((name) => /licen[cs]e|ofl|copying|notice/i.test(name) && (!shared || alnum(name).includes(family)));
+}
+
+function weightRange(weight) {
+  const [low, high = low] = weight.split(' ').map(Number);
+  return [low, high];
+}
+
+export function fontReport(identity) {
+  return fontSlots(identity).map((slot) => {
+    const font = identity.fonts[slot];
+    const ranges = font.files.map((file) => weightRange(file.weight));
+    const covers = (weight) => ranges.some(([low, high]) => low <= weight && weight <= high);
+    return {
+      slot,
+      family: font.family,
+      files: font.files.length,
+      weights: font.files.map((file) => file.weight.replace(' ', '-')),
+      missing: [[400, 'Regular'], [700, 'Bold']].filter(([weight]) => !covers(weight)).map(([weight, name]) => `${name} (${weight})`),
+    };
+  });
 }
 
 export function loadIdentity(root, themeOverride) {
@@ -208,6 +247,7 @@ export function cssVariables(identity, theme) {
     'term-line': t.line, 'term-muted': t.muted, 'term-accent': t.accent, 'term-prompt': t.prompt, 'term-error': t.error,
     ...textRoles(identity, theme),
     'font-display': `"${identity.fonts.display.family}", sans-serif`,
+    'font-body': `"${(identity.fonts.body || identity.fonts.display).family}", sans-serif`,
     'font-mono': `"${identity.fonts.mono.family}", monospace`,
   };
   for (const [code, hex] of Object.entries(t.ansi)) vars[`ansi-${code}`] = hex;
@@ -215,12 +255,12 @@ export function cssVariables(identity, theme) {
 }
 
 export function fontFaces(identity, prefix = '') {
-  const faces = [];
-  for (const kind of ['display', 'mono']) {
+  const faces = new Set();
+  for (const kind of fontSlots(identity)) {
     const font = identity.fonts[kind];
     for (const file of font.files) {
-      faces.push(`@font-face { font-family: "${font.family}"; src: url("${prefix}${file.path}"); font-weight: ${file.weight}; }`);
+      faces.add(`@font-face { font-family: "${font.family}"; src: url("${prefix}${file.path}"); font-weight: ${file.weight}; }`);
     }
   }
-  return faces.join('\n');
+  return [...faces].join('\n');
 }
