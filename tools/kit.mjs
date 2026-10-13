@@ -166,7 +166,7 @@ const commands = {
   dev() {
     const dir = videoDir();
     doBuild(dir);
-    console.log('\nStudio local (somente leitura: edite src/scenes e o video.json, não a pasta build/). Ctrl+C para sair.');
+    console.log('\nStudio local (somente leitura: edite as cenas e o video.json, não a pasta build/). Ctrl+C para sair.');
     must(hf(['preview', buildDir(dir), '--foreground']), 'preview');
   },
 

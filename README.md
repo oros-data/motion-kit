@@ -40,6 +40,7 @@ Um vídeo pode usar qualquer combinação de cenas; a cena `terminal` é opciona
 | `npm run preview -- <pasta>` | render em 960x540 |
 | `npm run render -- <pasta>` | render final 1920x1080 30 fps (CPU; `KIT_GPU=1` usa a GPU) |
 | `npm run smoke` | tudo acima no exemplo, com render de 3 s |
+| `npm run update` | mostra o que mudaria ao atualizar os arquivos do kit para a última release; `--apply` aplica ([docs/update.md](docs/update.md)) |
 
 `<pasta>` é `examples/primeiro-commit` ou `videos/<slug>`. Opções: `--theme osaka-jade` troca o tema só neste build; `--out arquivo.mp4` no render.
 
