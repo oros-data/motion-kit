@@ -80,6 +80,8 @@ export function build(root, videoDir, options = {}) {
     const source = sceneSource(root, videoDir, scene.scene, warned);
     if (!source) fail(`cena "${scene.id}": tipo "${scene.scene}" não existe em ${relative(root, join(videoDir, 'scenes'))}/ nem em ${SCENE_DIR}/`);
     sources[scene.id] = source;
+    const formats = readFileSync(source, 'utf8').match(/<template[^>]*\sdata-formats="([^"]*)"/)?.[1].split(/\s+/);
+    if (formats && !formats.includes(format)) fail(`cena "${scene.id}": a cena "${scene.scene}" ainda não tem layout para ${format} (só ${formats.join(', ')}); troque de cena ou use "format": "${formats[0]}"`);
     const item = { id: scene.id, scene: scene.scene, props: scene.props || {}, seconds: scene.seconds };
     if (scene.scene === 'terminal') Object.assign(item, resolveTerminal(root, videoDir, item, format));
     if (typeof item.seconds !== 'number' || item.seconds <= 0) fail(`cena "${scene.id}": "seconds" obrigatório`);

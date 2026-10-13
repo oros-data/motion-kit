@@ -14,6 +14,11 @@
     [data-composition-id="__ID__"] .cursor { display: inline-block; width: 36px; height: 92px; background: var(--primary); margin-left: 14px; vertical-align: -6px; }
     [data-composition-id="__ID__"] .sub { font-size: 38px; line-height: 1.45; color: var(--text); margin-top: 48px; max-width: 1300px; opacity: 0; }
     [data-composition-id="__ID__"] .sub b { color: var(--concept); }
+    @container (aspect-ratio <= 1) {
+      [data-composition-id="__ID__"] .col { left: 72px; width: calc(100% - 144px); }
+      [data-composition-id="__ID__"] .ln { font-size: 96px; }
+      [data-composition-id="__ID__"] .sub { font-size: 34px; }
+    }
   </style>
   <div data-composition-id="__ID__" data-width="__WIDTH__" data-height="__HEIGHT__">
     <div class="fx">

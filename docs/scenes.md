@@ -58,9 +58,9 @@ Para uma cena que o kit não tem, crie `videos/<slug>/scenes/<nome>.html` (minú
 
 No `9:16`, o conteúdo fica entre y 150 e y 1400; abaixo disso ficam a câmera e a interface do app. HUD no topo (nome // título à esquerda, tagline à direita; quebra em duas linhas quando falta largura) e barra de progresso embaixo são do kit, não da cena.
 
-As nove cenas se ajustam sozinhas aos três formatos. Uma cena nova faz o mesmo: o elemento raiz já é um container CSS (`container-type: size`), então o layout muda com `@container (aspect-ratio <= 1)` (quadrado e vertical) e `@container (aspect-ratio < 1)` (só vertical), e larguras usam `%` ou `calc(100% - ...)`. Tamanhos de fonte em px valem nos três formatos, porque o lado menor é sempre 1080. No script, `window.KIT.width`, `window.KIT.height`, `window.KIT.format` e `window.KIT.camera` dão o canvas e a região da câmera.
+As cenas do kit se ajustam sozinhas aos três formatos, com as exceções abaixo. Uma cena nova faz o mesmo: o elemento raiz já é um container CSS (`container-type: size`), então o layout muda com `@container (aspect-ratio <= 1)` (quadrado e vertical) e `@container (aspect-ratio < 1)` (só vertical), e larguras usam `%` ou `calc(100% - ...)`. Tamanhos de fonte em px valem nos três formatos, porque o lado menor é sempre 1080. No script, `window.KIT.width`, `window.KIT.height`, `window.KIT.format` e `window.KIT.camera` dão o canvas e a região da câmera.
 
-Limite: o `terminal` com `places` não cabe no `1:1` e o build para com uma mensagem; no `1:1`, use o terminal sem `places`. No `9:16`, o diagrama de lugares vai para baixo do terminal, ao lado do callout.
+Limites: `hub`, `counter`, `chart` e `proof` só têm layout em `16:9` (`<template data-formats="16:9">`); em outro formato o build para com uma mensagem que nomeia a cena. Uma cena própria que só funciona em alguns formatos declara o mesmo atributo. O `terminal` com `places` não cabe no `1:1` e o build também para; no `1:1`, use o terminal sem `places`. No `9:16`, o diagrama de lugares vai para baixo do terminal, ao lado do callout.
 
 ## Portões de qualidade do `npm run check`
 
