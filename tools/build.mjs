@@ -1,5 +1,6 @@
 import { copyFileSync, cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { basename, join, relative, resolve } from 'node:path';
+import { loadLogo } from './logo.mjs';
 import { contrastReport, cssVariables, fontFaces, loadIdentity, textRoles } from './identity.mjs';
 
 const SCENE_DIR = 'src/scenes';
@@ -88,10 +89,11 @@ export function build(root, videoDir, options = {}) {
   });
   writeFileSync(join(out, 'theme.css'), `${faces}\n${cssVariables(identity, theme)}`);
 
-  const logoSvg = readFileSync(join(root, identity.logo.file), 'utf8').replace(/<\?xml[^>]*>/, '').trim();
+  const logoFile = loadLogo(root, identity, theme);
+  for (const warning of logoFile.warnings) console.log(`  logo AVISO: ${warning}`);
   const data = {
     fps, total, width: identity.canvas.width, height: identity.canvas.height,
-    identity: { name: identity.name, slug: identity.slug, language: identity.language, voice: identity.voice, mode: theme.mode, logo: { ...identity.logo, svg: logoSvg } },
+    identity: { name: identity.name, slug: identity.slug, language: identity.language, voice: identity.voice, mode: theme.mode, logo: { ...identity.logo, svg: logoFile.svg } },
     theme, video: { slug, title: video.title || slug }, items, order,
   };
   writeFileSync(join(out, 'data.js'), `window.KIT = ${JSON.stringify(data)};\n`);

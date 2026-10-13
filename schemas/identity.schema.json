@@ -48,7 +48,7 @@
       "additionalProperties": false,
       "required": ["file", "on"],
       "properties": {
-        "file": { "type": "string", "pattern": "\\.svg$" },
+        "file": { "type": "string", "pattern": "\\.(svg|png|webp|jpe?g)$" },
         "min_height_px": { "type": "integer", "minimum": 24 },
         "clearspace_px": { "type": "integer", "minimum": 0 },
         "on": { "type": "string", "enum": ["dark", "light"] }

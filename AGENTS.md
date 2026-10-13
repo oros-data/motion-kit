@@ -58,6 +58,7 @@ Você é o agente de programação de um aluno. Este repositório gera vídeos d
 - Nunca escreva cor em hex, rgb ou nome de fonte em `src/`; leia os tokens.
 - Nunca altere `src/fonts/`, `src/vendor/` ou `themes/*/colors.toml`. Para um tema novo, copie a pasta de um tema do Omarchy para `themes/<nome>/` com um `NOTICE`.
 - `npm run identity:check` valida o schema, os arquivos e o contraste. Rode antes de qualquer render quando mudar a identidade.
+- `logo.file` aponta direto para SVG, PNG, WebP ou JPG dentro do repositório; nunca embrulhe raster em SVG à mão. O build embute o raster e avisa sobre `logo.on`, fundo opaco e contraste; um SVG com script, `foreignObject` ou referência externa é rejeitado: não contorne, peça outro arquivo. Receita de conversão em `docs/identity.md`.
 
 ## Segurança
 

@@ -1,5 +1,6 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { basename, dirname, join } from 'node:path';
+import { readLogo } from './logo.mjs';
 
 export const ROLE_NAMES = ['background', 'surface', 'primary', 'secondary', 'muted', 'text', 'danger'];
 const ANSI_NAMES = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white'];
@@ -189,7 +190,7 @@ export function validateIdentity(root, identity) {
       }
     }
   }
-  if (!existsSync(join(root, identity.logo.file))) errors.push(`logo.file: arquivo não encontrado: ${identity.logo.file}`);
+  errors.push(...readLogo(root, identity.logo.file).errors);
   if (!existsSync(join(root, 'themes', identity.theme, 'colors.toml'))) errors.push(`theme: pasta themes/${identity.theme}/ sem colors.toml`);
   return errors;
 }
