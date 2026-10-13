@@ -5,7 +5,7 @@ Cada cena é um arquivo HTML e uma entrada em `video.json`: `{"id": "...", "scen
 | cena | para quê | props |
 |---|---|---|
 | `title` | cartão de abertura: logo, kicker, título digitado dentro de uma moldura neon, subtítulo | `kicker`, `text`, `sub`, `logo: false` para omitir o logo |
-| `logo` | revelação do logo com moldura e onda, nome e tagline | `height` (px do logo), `name`, `tagline` (até cerca de 30 caracteres; texto maior passa da moldura; string vazia esconde) |
+| `logo` | revelação do logo com moldura e onda, nome e tagline | `height` (px do logo; largura limitada a 720 px), `name`, `tagline` (até cerca de 30 caracteres; texto maior passa da moldura; string vazia esconde) |
 | `kinetic` | frase grande que entra palavra por palavra | `text`, `highlight: ["palavra", ...]` (cor conceito), `aside: [...]` (cor apoio), `sub` |
 | `cards` | título e 1 a 4 cartões numerados em sequência | `kicker`, `headline`, `cards: [{title, body, role?}]`, `footer` |
 | `callout` | uma afirmação com barra lateral e explicação | `kicker`, `text`, `sub`, `footer` |
