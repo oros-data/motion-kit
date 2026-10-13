@@ -1,7 +1,7 @@
 <template>
   <style>
     /*__FONTS__*/
-    [data-composition-id="__ID__"] { position: absolute; inset: 0; }
+    [data-composition-id="__ID__"] { position: absolute; inset: 0; container-type: size; }
     [data-composition-id="__ID__"] .fx { position: absolute; inset: 0; padding: 150px 140px 110px; opacity: 0; }
     [data-composition-id="__ID__"] .kicker { font-family: var(--font-mono); font-size: 25px; color: var(--aside); letter-spacing: 4px; font-weight: 700; margin-bottom: 20px; }
     [data-composition-id="__ID__"] h2 { font-size: 64px; line-height: 1.08; font-weight: 800; color: var(--concept); }
@@ -12,8 +12,29 @@
     [data-composition-id="__ID__"] .col li::before { content: "·"; position: absolute; left: 6px; font-weight: 800; }
     [data-composition-id="__ID__"] .vs { align-self: center; font-family: var(--font-mono); font-size: 30px; color: var(--muted); letter-spacing: 3px; }
     [data-composition-id="__ID__"] .foot { font-family: var(--font-body); font-size: 30px; color: var(--muted); margin-top: 40px; text-align: center; }
+
+    @container (aspect-ratio <= 1) {
+      [data-composition-id="__ID__"] .fx { padding: 140px 72px 0; }
+      [data-composition-id="__ID__"] h2 { font-size: 56px; }
+      [data-composition-id="__ID__"] .cols { gap: 20px; margin-top: 40px; }
+      [data-composition-id="__ID__"] .col { min-height: 0; padding: 26px 28px; }
+      [data-composition-id="__ID__"] .col .t { font-size: 32px; margin-bottom: 12px; }
+      [data-composition-id="__ID__"] .col li { font-size: 28px; padding-left: 28px; margin-top: 8px; }
+      [data-composition-id="__ID__"] .vs { font-size: 26px; letter-spacing: 1px; }
+      [data-composition-id="__ID__"] .foot { font-size: 26px; margin-top: 28px; }
+    }
+    @container (aspect-ratio < 1) {
+      [data-composition-id="__ID__"] .fx { display: flex; flex-direction: column; justify-content: center; padding: 150px 72px 520px; }
+      [data-composition-id="__ID__"] .cols { flex-direction: column; margin-top: 56px; }
+      [data-composition-id="__ID__"] .col { flex: none; }
+      [data-composition-id="__ID__"] h2 { font-size: 72px; }
+      [data-composition-id="__ID__"] .col .t { font-size: 40px; }
+      [data-composition-id="__ID__"] .col li { font-size: 36px; }
+      [data-composition-id="__ID__"] .vs { font-size: 34px; }
+      [data-composition-id="__ID__"] .foot { font-size: 32px; }
+    }
   </style>
-  <div data-composition-id="__ID__" data-width="1920" data-height="1080">
+  <div data-composition-id="__ID__" data-width="__WIDTH__" data-height="__HEIGHT__">
     <div class="fx">
       <div class="kicker"></div>
       <h2></h2>

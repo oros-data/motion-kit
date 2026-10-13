@@ -78,14 +78,15 @@ function snapshotTimes(result) {
   return times.filter((t) => t < result.total).map((t) => Math.round(t * 10) / 10).slice(0, 15);
 }
 
-function phoneSheet(dir) {
+function phoneSheet(dir, result) {
   const snaps = join(root, dir, 'snapshots');
   const frames = readdirSync(snaps).filter((f) => /^frame-.*\.png$/.test(f)).sort();
   if (!frames.length) return;
   const cols = 3;
+  const tile = Math.round((360 * result.height) / result.width);
   const rows = Math.ceil(frames.length / cols);
   const inputs = frames.flatMap((f) => ['-i', join(snaps, f)]);
-  const filter = `${frames.map((_, i) => `[${i}:v]scale=360:-1[s${i}]`).join(';')};${frames.map((_, i) => `[s${i}]`).join('')}xstack=inputs=${frames.length}:fill=black:layout=${frames.map((_, i) => `${(i % cols) * 360}_${Math.floor(i / cols) * 203}`).join('|')}[out]`;
+  const filter = `${frames.map((_, i) => `[${i}:v]scale=360:-1[s${i}]`).join(';')};${frames.map((_, i) => `[s${i}]`).join('')}xstack=inputs=${frames.length}:fill=black:layout=${frames.map((_, i) => `${(i % cols) * 360}_${Math.floor(i / cols) * tile}`).join('|')}[out]`;
   const status = sh('ffmpeg', ['-v', 'error', '-y', ...inputs, '-filter_complex', filter, '-map', '[out]', join(snaps, 'phone-sheet-360.png')]);
   if (status === 0) console.log(`phone sheet (360 px, ${rows} linhas): ${join(dir, 'snapshots', 'phone-sheet-360.png')}`);
 }
@@ -189,7 +190,7 @@ const commands = {
     const result = doBuild(dir);
     const at = flags.at || snapshotTimes(result).join(',');
     must(hf(['snapshot', buildDir(dir), '--at', at, '--no-browser-gpu', '--no-end', '--describe', String(flags.describe || false)]), 'snapshot');
-    phoneSheet(buildDir(dir));
+    phoneSheet(buildDir(dir), result);
   },
 
   render() {
@@ -202,10 +203,10 @@ const commands = {
 
   preview() {
     const dir = videoDir();
-    doBuild(dir, { preview: true });
-    const outFile = flags.out || join(buildDir(dir), 'renders', `${basename(dir)}-preview-960x540.mp4`);
+    const { width, height } = doBuild(dir, { preview: true });
+    const outFile = flags.out || join(buildDir(dir), 'renders', `${basename(dir)}-preview-${width}x${height}.mp4`);
     must(hf(renderArgs(buildDir(dir), outFile)), 'preview render');
-    console.log(`\nprévia 960x540: ${outFile}`);
+    console.log(`\nprévia ${width}x${height}: ${outFile}`);
   },
 
   smoke() {

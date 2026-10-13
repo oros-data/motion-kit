@@ -1,7 +1,7 @@
 <template>
   <style>
     /*__FONTS__*/
-    [data-composition-id="__ID__"] { position: absolute; inset: 0; }
+    [data-composition-id="__ID__"] { position: absolute; inset: 0; container-type: size; }
     [data-composition-id="__ID__"] .fx { position: absolute; inset: 0; padding: 150px 125px 110px; opacity: 0; }
     [data-composition-id="__ID__"] .kicker { font-family: var(--font-mono); font-size: 25px; color: var(--aside); letter-spacing: 4px; font-weight: 700; margin-bottom: 20px; }
     [data-composition-id="__ID__"] h2 { font-size: 68px; line-height: 1.08; font-weight: 800; color: var(--concept); }
@@ -11,8 +11,28 @@
     [data-composition-id="__ID__"] .place .s { font-family: var(--font-body); font-size: 28px; color: var(--text); line-height: 1.4; margin-top: 26px; }
     [data-composition-id="__ID__"] .arrow { font-size: 56px; color: var(--muted); opacity: 0; }
     [data-composition-id="__ID__"] .foot { font-family: var(--font-mono); font-size: 30px; color: var(--muted); margin-top: 60px; text-align: center; letter-spacing: 1px; }
+
+    @container (aspect-ratio <= 1) {
+      [data-composition-id="__ID__"] .fx { padding: 140px 72px 0; }
+      [data-composition-id="__ID__"] h2 { font-size: 56px; }
+      [data-composition-id="__ID__"] .row { gap: 10px; margin-top: 48px; align-items: stretch; }
+      [data-composition-id="__ID__"] .place { min-height: 0; padding: 22px 18px; border-width: 2px; }
+      [data-composition-id="__ID__"] .place .l { font-size: 26px; }
+      [data-composition-id="__ID__"] .place .s { font-size: 22px; margin-top: 14px; }
+      [data-composition-id="__ID__"] .arrow { align-self: center; font-size: 36px; }
+      [data-composition-id="__ID__"] .foot { font-size: 26px; margin-top: 36px; }
+    }
+    @container (aspect-ratio < 1) {
+      [data-composition-id="__ID__"] .fx { display: flex; flex-direction: column; justify-content: center; padding: 150px 72px 520px; }
+      [data-composition-id="__ID__"] .row { flex-direction: column; gap: 8px; margin-top: 56px; }
+      [data-composition-id="__ID__"] .place { flex: none; width: 100%; max-width: none; padding: 26px 32px; }
+      [data-composition-id="__ID__"] h2 { font-size: 72px; }
+      [data-composition-id="__ID__"] .place .l { font-size: 38px; }
+      [data-composition-id="__ID__"] .place .s { font-size: 32px; }
+      [data-composition-id="__ID__"] .foot { font-size: 30px; }
+    }
   </style>
-  <div data-composition-id="__ID__" data-width="1920" data-height="1080">
+  <div data-composition-id="__ID__" data-width="__WIDTH__" data-height="__HEIGHT__">
     <div class="fx">
       <div class="kicker"></div>
       <h2></h2>
@@ -30,7 +50,7 @@
         $(".foot").textContent = p.footer || "";
         const nodes = [];
         (p.steps || []).forEach((step, i) => {
-          if (i > 0) nodes.push($(".row").appendChild(K.el("div", "arrow", "→")));
+          if (i > 0) nodes.push($(".row").appendChild(K.el("div", "arrow", window.KIT.height > window.KIT.width ? "↓" : "→")));
           const role = step.role || (i % 2 === 0 ? "aside" : "concept");
           const node = K.el("div", "place");
           node.style.borderColor = `var(--${role})`;

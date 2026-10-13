@@ -1,7 +1,7 @@
-<template>
+<template data-formats="16:9">
   <style>
     /*__FONTS__*/
-    [data-composition-id="__ID__"] { position: absolute; inset: 0; }
+    [data-composition-id="__ID__"] { position: absolute; inset: 0; container-type: size; }
     [data-composition-id="__ID__"] .fx { position: absolute; inset: 0; opacity: 0; }
     [data-composition-id="__ID__"] .kicker { position: absolute; left: 140px; top: 120px; font-family: var(--font-mono); font-size: 25px; letter-spacing: 4px; font-weight: 700; color: var(--aside); }
     [data-composition-id="__ID__"] h2 { position: absolute; left: 140px; top: 160px; width: 1500px; font-size: 56px; line-height: 1.1; font-weight: 800; color: var(--concept); }
@@ -21,7 +21,7 @@
     [data-composition-id="__ID__"] .foot { position: absolute; left: 140px; top: 838px; width: 1280px; font-size: 34px; line-height: 1.4; color: var(--text); opacity: 0; }
     [data-composition-id="__ID__"] .foot b { color: var(--concept); }
   </style>
-  <div data-composition-id="__ID__" data-width="1920" data-height="1080">
+  <div data-composition-id="__ID__" data-width="__WIDTH__" data-height="__HEIGHT__">
     <div class="fx">
       <div class="kicker"></div>
       <h2></h2>

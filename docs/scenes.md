@@ -5,7 +5,7 @@ Cada cena é um arquivo HTML e uma entrada em `video.json`: `{"id": "...", "scen
 | cena | para quê | props |
 |---|---|---|
 | `title` | cartão de abertura: logo, kicker, título digitado dentro de uma moldura neon, subtítulo | `kicker`, `text`, `sub`, `logo: false` para omitir o logo |
-| `logo` | revelação do logo com moldura e onda, nome e tagline | `height` (px do logo), `name`, `tagline` (até cerca de 30 caracteres; texto maior passa da moldura; string vazia esconde) |
+| `logo` | revelação do logo com moldura e onda, nome e tagline | `height` (px do logo; largura limitada a 720 px), `name`, `tagline` (até cerca de 30 caracteres; texto maior passa da moldura; string vazia esconde) |
 | `kinetic` | frase grande que entra palavra por palavra | `text`, `highlight: ["palavra", ...]` (cor conceito), `aside: [...]` (cor apoio), `sub` |
 | `cards` | título e 1 a 4 cartões numerados em sequência | `kicker`, `headline`, `cards: [{title, body, role?}]`, `footer` |
 | `callout` | uma afirmação com barra lateral e explicação | `kicker`, `text`, `sub`, `footer` |
@@ -46,9 +46,21 @@ A janela do terminal usa a paleta escura do tema mesmo em identidades claras (to
 
 Para uma cena que o kit não tem, crie `videos/<slug>/scenes/<nome>.html` (minúsculas e hífens) a partir de `src/scenes/closing.html` e use `"scene": "<nome>"` no `video.json`. O build procura primeiro em `videos/<slug>/scenes/` e depois em `src/scenes/`, então a cena viaja com o vídeo, passa pelos mesmos `check` e `snapshot` e não é tocada por `npm run update`. Para mudar uma cena do kit, copie-a para essa pasta com outro nome. Um arquivo com o mesmo nome de uma cena do kit a substitui só neste vídeo, e o build imprime um aviso. As regras da cena (template, `__ID__`, timeline pausada, tokens de cor e fonte) estão em `AGENTS.md`.
 
-## Layout fixo
+## Formatos e região da câmera
 
-Canvas 1920x1080. O canto inferior direito (x 1492–1848, y 830–1030) fica livre para a câmera do apresentador em todas as cenas. HUD no topo (nome // título à esquerda, tagline à direita) e barra de progresso embaixo são do kit, não da cena.
+`format` em `video.json` define o canvas do vídeo inteiro: build, `check`, `snapshot`, `preview` e `render`. Sem `format`, vale `16:9`.
+
+| `format` | canvas | uso | região da câmera (livre em todas as cenas) |
+|---|---|---|---|
+| `16:9` | 1920x1080 | aula, YouTube | x 1492–1848, y 830–1030 (356x200) |
+| `9:16` | 1080x1920 | Reels, Shorts, stories | x 652–1008, y 1440–1760 (356x320) |
+| `1:1` | 1080x1080 | feed quadrado | x 652–1008, y 830–1030 (356x200) |
+
+No `9:16`, o conteúdo fica entre y 150 e y 1400; abaixo disso ficam a câmera e a interface do app. HUD no topo (nome // título à esquerda, tagline à direita; quebra em duas linhas quando falta largura) e barra de progresso embaixo são do kit, não da cena.
+
+As cenas do kit se ajustam sozinhas aos três formatos, com as exceções abaixo. Uma cena nova faz o mesmo: o elemento raiz já é um container CSS (`container-type: size`), então o layout muda com `@container (aspect-ratio <= 1)` (quadrado e vertical) e `@container (aspect-ratio < 1)` (só vertical), e larguras usam `%` ou `calc(100% - ...)`. Tamanhos de fonte em px valem nos três formatos, porque o lado menor é sempre 1080. No script, `window.KIT.width`, `window.KIT.height`, `window.KIT.format` e `window.KIT.camera` dão o canvas e a região da câmera.
+
+Limites: `hub`, `counter`, `chart` e `proof` só têm layout em `16:9` (`<template data-formats="16:9">`); em outro formato o build para com uma mensagem que nomeia a cena. Uma cena própria que só funciona em alguns formatos declara o mesmo atributo. O `terminal` com `places` não cabe no `1:1` e o build também para; no `1:1`, use o terminal sem `places`. No `9:16`, o diagrama de lugares vai para baixo do terminal, ao lado do callout.
 
 ## Portões de qualidade do `npm run check`
 
