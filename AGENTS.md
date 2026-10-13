@@ -13,7 +13,7 @@ Você é o agente de programação de um aluno. Este repositório gera vídeos d
 - `brand/identity.json`: a identidade do aluno (nome, tema, cores, fontes, logo, voz). Validada por `schemas/identity.schema.json`. É a única fonte de cores e fontes.
 - `themes/<nome>/colors.toml`: paletas no formato do Omarchy. `theme` em identity.json escolhe uma; `colors` em identity.json sobrescreve papéis individuais.
 - `videos/<slug>/`: um vídeo = `video.json` (cenas e tempos), `steps.json` (comandos do terminal), `transcript.json` (saída real capturada), `assets/` e, se precisar, `scenes/` (cenas próprias do vídeo). Os arquivos de `assets/` vão para `build/<slug>/assets/` e as cenas os referenciam de forma relativa, como `assets/x.png`.
-- `examples/primeiro-commit/`: exemplo completo de 31 s com terminal. `examples/apresentacao-de-marca/`: 29 s só com cenas de texto, logo, cartões e comparação. `examples/painel-de-resultados/`: 37 s com as cenas de dados (hero, hub, counter, chart, proof). Um vídeo usa qualquer combinação de cenas; a cena `terminal` é opcional (o exemplo com Git existe porque a primeira aula é sobre Git). Copie um deles para começar um vídeo novo.
+- `examples/primeiro-commit/`: exemplo completo de 31 s com terminal. `examples/apresentacao-de-marca/`: 29 s só com cenas de texto, logo, cartões e comparação. `examples/painel-de-resultados/`: 37 s com as cenas de dados (hero, hub, counter, chart, proof). `examples/dica-vertical/`: 32 s em `9:16` (Reels, Shorts, stories). Um vídeo usa qualquer combinação de cenas; a cena `terminal` é opcional (o exemplo com Git existe porque a primeira aula é sobre Git). Copie um deles para começar um vídeo novo.
 - `src/scenes/*.html`: biblioteca de cenas (uma sub-composição HyperFrames por arquivo; props de cada uma em `docs/scenes.md`). `src/kit.js`: utilitários (ANSI, fade, logo). `tools/`: build e comandos.
 - `build/<slug>/`: saída gerada pelo build. Nunca edite nem versione.
 - Arquivos do kit (`src/`, `tools/`, `schemas/`, `themes/`, `docs/`, `runner/`, `package.json`, `package-lock.json`, `AGENTS.md`, `NOTICES.md`, `LICENSE`, `kit.version`) vêm do template e são substituídos por `npm run update`. O trabalho do aluno fica em `brand/` e `videos/`.
@@ -22,15 +22,16 @@ Você é o agente de programação de um aluno. Este repositório gera vídeos d
 
 ### 1. Vídeo novo
 1. `cp -r examples/primeiro-commit videos/<slug>` e apague `transcript.json` e `.work/` copiados.
-2. Escreva `video.json`: lista `scenes`, cada uma com `id` (minúsculas e hífens), `scene` (nome do arquivo, sem `.html`, em `videos/<slug>/scenes/` ou `src/scenes/`), `seconds` (exceto `terminal`, cuja duração vem da soma dos `wait` dos passos) e `props`. Mantenha a duração que a atividade pedir; sem duração definida, use 60 a 240 s no total.
+2. Escreva `video.json`: `format` (`16:9` padrão, `9:16` vertical, `1:1` quadrado) e a lista `scenes`, cada uma com `id` (minúsculas e hífens), `scene` (nome do arquivo, sem `.html`, em `videos/<slug>/scenes/` ou `src/scenes/`), `seconds` (exceto `terminal`, cuja duração vem da soma dos `wait` dos passos) e `props`. Mantenha a duração que a atividade pedir; sem duração definida, use 60 a 240 s no total.
 3. Se houver cena `terminal`, escreva `steps.json` e capture (receita 3).
 4. `npm run build -- videos/<slug>` imprime a grade de tempos. Depois siga o ciclo de validação.
 
 ### 2. Adicionar ou mudar uma cena
 - Mudar: edite `props` em `video.json`. Para mudar o HTML de uma cena do kit, copie `src/scenes/<nome>.html` para `videos/<slug>/scenes/` com outro nome e use esse nome em `video.json`; não edite `src/scenes/`.
-- Nova cena: crie `videos/<slug>/scenes/<nome>.html` (nome em minúsculas e hífens) copiando `src/scenes/closing.html` como base. O build procura a cena primeiro em `videos/<slug>/scenes/` e depois em `src/scenes/`; um nome igual ao de uma cena do kit a substitui só neste vídeo e o build avisa. Regras: um `<template>` com `<style>` (comece com `/*__FONTS__*/`), um `<div data-composition-id="__ID__" data-width="1920" data-height="1080">` e um `<script>` que lê `window.KIT.items["__ID__"]`, monta o DOM a partir de `item.props`, cria `gsap.timeline({ paused: true })` e registra `window.__timelines["__ID__"] = tl`. O build troca `__ID__` pelo id da cena.
+- Nova cena: crie `videos/<slug>/scenes/<nome>.html` (nome em minúsculas e hífens) copiando `src/scenes/closing.html` como base. O build procura a cena primeiro em `videos/<slug>/scenes/` e depois em `src/scenes/`; um nome igual ao de uma cena do kit a substitui só neste vídeo e o build avisa. Regras: um `<template>` com `<style>` (comece com `/*__FONTS__*/`), um `<div data-composition-id="__ID__" data-width="__WIDTH__" data-height="__HEIGHT__">` e um `<script>` que lê `window.KIT.items["__ID__"]`, monta o DOM a partir de `item.props`, cria `gsap.timeline({ paused: true })` e registra `window.__timelines["__ID__"] = tl`. O build troca `__ID__` pelo id da cena e `__WIDTH__`/`__HEIGHT__` pelo canvas do `format`.
 - Toda cor vem de `var(--primary)`, `--secondary`, `--text`, `--muted`, `--danger`, `--bg`, `--surface`, `--line`, `--concept`, `--aside`, `--base`, `--error`, `--term-*`, `--ansi-NN`. Toda fonte vem de `var(--font-display)` (títulos), `var(--font-body)` (texto corrido) e `var(--font-mono)` (terminal e rótulos).
-- Fique fora da região do apresentador: x 1492–1848, y 830–1030 (canto inferior direito). Mostre-a com `--variables '{"debugSafe":true}'` no render.
+- A cena funciona nos três formatos: o layout muda com `@container (aspect-ratio <= 1)` e `@container (aspect-ratio < 1)`, larguras em `%`, e o script lê `window.KIT.width`/`height`. Detalhes em `docs/scenes.md`.
+- Fique fora da região do apresentador no canto inferior direito (16:9: x 1492–1848, y 830–1030; 9:16 e 1:1 em `docs/scenes.md`). Mostre-a com `--variables '{"debugSafe":true}'` no render.
 
 ### 3. Capturar saída real do terminal (nunca invente saída)
 1. Em `steps.json`: `repo_name`, `terminal_columns` e `steps`, cada passo com `id`, `command` (bash; comandos longos quebram em linhas de continuação na tela, mas um passo curto lê melhor), `wait` (segundos na tela), opcionais `callout`, `subcallout`, `highlight` (substring de uma linha da saída), `expected_exit` e `diagram` (lista de operações: `{"op":"chip","file":"X"}`, `{"op":"stage","files":[...]}`, `{"op":"commit","label":"..."}`).
@@ -41,7 +42,7 @@ Você é o agente de programação de um aluno. Este repositório gera vídeos d
 ### 4. Conferir quadros antes do render completo
 1. `npm run check -- videos/<slug>`: lint + runtime + layout + movimento + contraste + portões de qualidade do kit (abaixo). Corrija todo erro antes de seguir.
 2. `npm run snapshot -- videos/<slug>`: quadros em `build/<slug>/snapshots/` (contact-sheet.jpg e phone-sheet-360.png). Olhe os dois; texto ilegível a 360 px é defeito.
-3. `npm run preview -- videos/<slug>`: render em 960x540, rápido.
+3. `npm run preview -- videos/<slug>`: render na metade do tamanho, rápido.
 4. Só então `npm run render -- videos/<slug>`. Cenas de `videos/<slug>/scenes/` passam pelos mesmos `check` e `snapshot`. Para olhar momentos específicos, use `npm run snapshot -- videos/<slug> --at 1,2.6,...` (segundos). Nunca diga que conferiu um render sem ter olhado os snapshots.
 
 ## Regras duras das composições HyperFrames

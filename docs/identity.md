@@ -11,7 +11,7 @@ Validada por `schemas/identity.schema.json`. `npm run identity:check` mostra err
 | `fonts.display`, `fonts.body`, `fonts.mono` | três vagas de fonte: `display` (títulos), `body` (texto corrido, descrições, legendas) e `mono` (terminal, rótulos e código). `body` é opcional: sem ele o texto corrido usa a fonte `display`. Cada fonte tem `family`, `files` e, opcional, `license` (veja abaixo). Em `files`, um arquivo por peso: `path` relativo à raiz e `weight` como `"400"` ou `"100 900"` (fonte variável). Pesos suportados: Regular 400, Medium 500, SemiBold 600 e Bold 700; falta de 400 ou 700 gera aviso e o navegador usa o peso mais próximo. Famílias incluídas no kit: Inter (sans) e JetBrains Mono (mono); não há fonte arredondada incluída |
 | `logo` | `file` (SVG, PNG, WebP ou JPG dentro do repositório; em SVG use `currentColor` para herdar a cor primária), `min_height_px`, `clearspace_px`, `on` (fundo para o qual o logo foi feito: `dark` ou `light`) |
 | `voice` | `tone` (3 a 5 palavras), `tagline` (aparece no HUD e no encerramento), `sample_copy.title` e `caption` (textos padrão) |
-| `canvas` | `1920x1080`, `fps` 30 |
+| `canvas` | `1920x1080`, `fps` 30; vídeo vertical ou quadrado vem do `format` em `video.json` ([scenes.md](scenes.md#formatos-e-região-da-câmera)) |
 | `mode` | `dark` ou `light` (usado quando `colors.background` é próprio) |
 
 A janela da cena `terminal` usa sempre a paleta escura do tema (`themes/<tema>/colors.toml`), com os próprios tons de texto, prompt e destaque ajustados para contraste, independentemente de `mode` e de `colors`: uma identidade clara mantém o terminal escuro e passa o `check`.

@@ -1,22 +1,23 @@
 <template>
   <style>
     /*__FONTS__*/
-    [data-composition-id="__ID__"] { position: absolute; inset: 0; }
+    [data-composition-id="__ID__"] { position: absolute; inset: 0; container-type: size; }
     [data-composition-id="__ID__"] .fx { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0; }
-    [data-composition-id="__ID__"] svg.frame { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+    [data-composition-id="__ID__"] svg.frame { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
     [data-composition-id="__ID__"] .bw { position: absolute; inset: 0; }
     [data-composition-id="__ID__"] .bloom { position: absolute; inset: 0; }
     [data-composition-id="__ID__"] .bloom.blur { filter: blur(12px) brightness(1.7) saturate(1.25); opacity: .9; mix-blend-mode: screen; }
     [data-composition-id="__ID__"] .mode-light .bloom.blur { display: none; }
-    [data-composition-id="__ID__"] .copy { position: absolute; width: 1320px; text-align: center; }
+    [data-composition-id="__ID__"] .copy { position: absolute; width: min(1320px, 100% - 264px); text-align: center; }
     [data-composition-id="__ID__"] .logo { display: flex; justify-content: center; color: var(--primary); margin-bottom: 26px; }
     [data-composition-id="__ID__"] .kicker { font-family: var(--font-mono); font-size: 25px; color: var(--aside); letter-spacing: 4px; font-weight: 700; margin-bottom: 20px; }
     [data-composition-id="__ID__"] h1 { font-family: var(--font-display); font-size: 88px; line-height: 1.08; color: var(--concept); font-weight: 800; text-shadow: 0 0 26px color-mix(in srgb, var(--concept) 45%, transparent); white-space: pre-wrap; }
+    [data-composition-id="__ID__"] h1 .word { white-space: nowrap; }
     [data-composition-id="__ID__"] h1 .c { opacity: 0; }
     [data-composition-id="__ID__"] h1 .cur { display: inline-block; width: 0; overflow: visible; opacity: 0; text-align: left; font-size: .8em; vertical-align: .04em; color: var(--text); }
     [data-composition-id="__ID__"] .sub { font-family: var(--font-body); font-size: 35px; color: var(--text); margin-top: 42px; }
   </style>
-  <div data-composition-id="__ID__" data-width="1920" data-height="1080">
+  <div data-composition-id="__ID__" data-width="__WIDTH__" data-height="__HEIGHT__">
     <div class="fx">
       <div class="bw">
         <div class="bloom blur"></div>
@@ -41,18 +42,20 @@
         if (window.KIT.theme.mode === "light") $(".bw").classList.add("mode-light");
 
         const NS = "http://www.w3.org/2000/svg";
+        const W = window.KIT.width, H = window.KIT.height;
+        const fw = Math.min(1400, W - 144), fh = W === H ? 540 : 580, fx = (W - fw) / 2, fy = (H - fh) / 2;
         const build = (tag) => {
           const svg = document.createElementNS(NS, "svg");
           svg.setAttribute("class", "frame");
-          svg.setAttribute("viewBox", "0 0 1920 1080");
+          svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
           svg.innerHTML = `
             <defs><pattern id="dith-__ID__-${tag}" width="8" height="8" patternUnits="userSpaceOnUse"><rect x="0" y="0" width="2" height="2" fill="var(--primary)"/><rect x="4" y="4" width="2" height="2" fill="var(--primary)"/></pattern></defs>
-            <rect x="272" y="262" width="1376" height="556" rx="2.8" fill="var(--primary)" class="tint"/>
-            <rect x="272" y="262" width="1376" height="556" fill="url(#dith-__ID__-${tag})" opacity=".15"/>
-            <rect class="r1" x="260" y="250" width="1400" height="580" rx="10" pathLength="1" fill="none" stroke="var(--primary)" stroke-width="4" stroke-dasharray="1" stroke-dashoffset="1"/>
-            <rect class="r2" x="260" y="250" width="1400" height="580" rx="10" pathLength="1" fill="none" stroke="var(--text)" stroke-width="1.2" stroke-dasharray="1" stroke-dashoffset="1"/>
-            <circle class="rip1" cx="960" cy="540" r="14" fill="none" stroke="var(--text)" stroke-width="3.5" opacity="0"/>
-            <circle class="rip2" cx="960" cy="540" r="8" fill="none" stroke="var(--primary)" stroke-width="2" opacity="0"/>`;
+            <rect x="${fx + 12}" y="${fy + 12}" width="${fw - 24}" height="${fh - 24}" rx="2.8" fill="var(--primary)" class="tint"/>
+            <rect x="${fx + 12}" y="${fy + 12}" width="${fw - 24}" height="${fh - 24}" fill="url(#dith-__ID__-${tag})" opacity=".15"/>
+            <rect class="r1" x="${fx}" y="${fy}" width="${fw}" height="${fh}" rx="10" pathLength="1" fill="none" stroke="var(--primary)" stroke-width="4" stroke-dasharray="1" stroke-dashoffset="1"/>
+            <rect class="r2" x="${fx}" y="${fy}" width="${fw}" height="${fh}" rx="10" pathLength="1" fill="none" stroke="var(--text)" stroke-width="1.2" stroke-dasharray="1" stroke-dashoffset="1"/>
+            <circle class="rip1" cx="${W / 2}" cy="${H / 2}" r="14" fill="none" stroke="var(--text)" stroke-width="3.5" opacity="0"/>
+            <circle class="rip2" cx="${W / 2}" cy="${H / 2}" r="8" fill="none" stroke="var(--primary)" stroke-width="2" opacity="0"/>`;
           return svg;
         };
         $(".bloom.blur").appendChild(build("a"));
@@ -62,9 +65,14 @@
         const h1 = $("h1");
         const cursors = [];
         const chars = [];
-        const mkCursor = () => { const s = K.el("span", "cur", "▌"); cursors.push(s); h1.appendChild(s); };
+        let host = h1;
+        const mkCursor = () => { const s = K.el("span", "cur", "▌"); cursors.push(s); host.appendChild(s); };
         mkCursor();
-        [...text].forEach((ch) => { const s = K.el("span", "c", ch); chars.push(s); h1.appendChild(s); mkCursor(); });
+        [...text].forEach((ch) => {
+          if (ch === " ") host = h1;
+          else if (host === h1) host = h1.appendChild(K.el("span", "word"));
+          const s = K.el("span", "c", ch); chars.push(s); host.appendChild(s); mkCursor();
+        });
 
         const tl = gsap.timeline({ paused: true });
         const seconds = item.seconds;

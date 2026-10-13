@@ -1,15 +1,25 @@
 <template>
   <style>
     /*__FONTS__*/
-    [data-composition-id="__ID__"] { position: absolute; inset: 0; }
+    [data-composition-id="__ID__"] { position: absolute; inset: 0; container-type: size; }
     [data-composition-id="__ID__"] .fx { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 0 160px 60px; opacity: 0; }
     [data-composition-id="__ID__"] .words { max-width: 1500px; text-align: center; font-size: 96px; line-height: 1.15; font-weight: 800; color: var(--text); }
     [data-composition-id="__ID__"] .w { display: inline-block; margin: 0 .18em; opacity: 0; }
     [data-composition-id="__ID__"] .w.hi { color: var(--concept); text-shadow: 0 0 30px color-mix(in srgb, var(--concept) 45%, transparent); }
     [data-composition-id="__ID__"] .w.aside { color: var(--aside); }
     [data-composition-id="__ID__"] .sub { position: absolute; left: 0; right: 0; bottom: 150px; text-align: center; font-family: var(--font-mono); font-size: 28px; color: var(--muted); letter-spacing: 3px; opacity: 0; }
+
+    @container (aspect-ratio <= 1) {
+      [data-composition-id="__ID__"] .fx { padding: 120px 72px 280px; }
+      [data-composition-id="__ID__"] .words { font-size: 88px; }
+      [data-composition-id="__ID__"] .sub { bottom: 270px; padding: 0 72px; }
+    }
+    @container (aspect-ratio < 1) {
+      [data-composition-id="__ID__"] .fx { padding-bottom: 560px; }
+      [data-composition-id="__ID__"] .sub { bottom: 600px; }
+    }
   </style>
-  <div data-composition-id="__ID__" data-width="1920" data-height="1080">
+  <div data-composition-id="__ID__" data-width="__WIDTH__" data-height="__HEIGHT__">
     <div class="fx">
       <div class="words"></div>
       <div class="sub"></div>

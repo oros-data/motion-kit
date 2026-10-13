@@ -12,17 +12,17 @@
       * { margin: 0; padding: 0; box-sizing: border-box; }
       html, body { width: {{WIDTH}}px; height: {{HEIGHT}}px; overflow: hidden; background: var(--bg); }
       #root { position: relative; width: {{WIDTH}}px; height: {{HEIGHT}}px; overflow: hidden; background: var(--bg); }
-      #stage { position: relative; width: 1920px; height: 1080px; overflow: hidden; color: var(--text); font-family: var(--font-display); background: radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--surface) 55%, var(--bg)) 0%, var(--bg) 62%); zoom: {{ZOOM}}; }
+      #stage { position: relative; width: {{STAGE_WIDTH}}px; height: {{STAGE_HEIGHT}}px; overflow: hidden; color: var(--text); font-family: var(--font-display); background: radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--surface) 55%, var(--bg)) 0%, var(--bg) 62%); zoom: {{ZOOM}}; }
       #grid { position: absolute; inset: -20px; background-image: linear-gradient(color-mix(in srgb, var(--primary) 7%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--primary) 7%, transparent) 1px, transparent 1px); background-size: 96px 96px; }
       #scan { position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0, rgba(0,0,0,.18) 1px, transparent 1px, transparent 4px); mix-blend-mode: multiply; opacity: .42; }
       .mode-light #scan { display: none; }
-      .hud { position: absolute; top: 38px; font-family: var(--font-mono); }
-      #hud-left { left: 70px; font-size: 23px; color: var(--muted); letter-spacing: 3px; }
-      #hud-right { right: 70px; font-size: 22px; color: var(--aside); letter-spacing: 2px; }
+      #hud { position: absolute; top: 38px; left: 70px; right: 70px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 40px; font-family: var(--font-mono); }
+      #hud-left { font-size: 23px; color: var(--muted); letter-spacing: 3px; }
+      #hud-right { font-size: 22px; color: var(--aside); letter-spacing: 2px; }
       #progress { position: absolute; left: 70px; right: 70px; bottom: 30px; height: 3px; background: color-mix(in srgb, var(--line) 60%, var(--bg)); }
       #progress-fill { width: 100%; height: 100%; background: var(--primary); box-shadow: 0 0 16px var(--primary); transform-origin: 0 50%; }
       .clip { position: absolute; inset: 0; }
-      #safe-debug { position: absolute; left: 1492px; top: 830px; width: 356px; height: 200px; border: 4px dashed var(--danger); background: color-mix(in srgb, var(--danger) 18%, transparent); color: var(--danger); font: 700 26px var(--font-mono); display: none; align-items: center; justify-content: center; z-index: 50; }
+      #safe-debug { position: absolute; {{CAMERA}} border: 4px dashed var(--danger); background: color-mix(in srgb, var(--danger) 18%, transparent); color: var(--danger); font: 700 26px var(--font-mono); display: none; align-items: center; justify-content: center; z-index: 50; }
     </style>
   </head>
   <body>
@@ -30,8 +30,7 @@
       <div id="stage" class="mode-{{MODE}}">
         <div id="grid" data-layout-allow-overflow></div>
         <div id="scan"></div>
-        <div class="hud" id="hud-left">{{HUD_LEFT}}</div>
-        <div class="hud" id="hud-right">{{HUD_RIGHT}}</div>
+        <div id="hud"><div id="hud-left">{{HUD_LEFT}}</div><div id="hud-right">{{HUD_RIGHT}}</div></div>
         <div id="progress"><div id="progress-fill"></div></div>
 {{SLOTS}}
         <div id="safe-debug">REGIAO SEGURA · apresentador</div>

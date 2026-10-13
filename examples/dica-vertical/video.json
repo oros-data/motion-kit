@@ -1,0 +1,14 @@
+{
+  "title": "Dica vertical",
+  "format": "9:16",
+  "hud": { "right": "EXEMPLO · 9:16" },
+  "scenes": [
+    { "id": "abertura", "scene": "title", "seconds": 4, "props": { "kicker": "DICA RÁPIDA", "text": "UM VÍDEO, TRÊS FORMATOS", "sub": "Reels, Shorts e stories" } },
+    { "id": "gancho", "scene": "kinetic", "seconds": 4, "props": { "text": "Mesma marca. Mesmas cenas. Outra tela.", "highlight": ["marca", "cenas"], "aside": ["tela"], "sub": "FORMATO 9:16" } },
+    { "id": "passos", "scene": "flow", "seconds": 5, "props": { "kicker": "COMO FAZER", "headline": "Uma linha no video.json.", "steps": [{ "label": "FORMAT", "sub": "\"9:16\" no video.json" }, { "label": "CHECK", "sub": "npm run check" }, { "label": "RENDER", "sub": "1080x1920 no seu computador" }] } },
+    { "id": "formatos", "scene": "cards", "seconds": 6, "props": { "kicker": "ESCOLHA A TELA", "headline": "Três formatos prontos.", "cards": [{ "title": "16:9", "body": "aula, YouTube, tela cheia" }, { "title": "9:16", "body": "Reels, Shorts, stories", "role": "aside" }, { "title": "1:1", "body": "feed quadrado" }] } },
+    { "id": "antes-depois", "scene": "compare", "seconds": 5, "props": { "kicker": "ANTES E DEPOIS", "headline": "Sem refazer nada.", "left": { "title": "ANTES", "items": ["só tela deitada", "corte manual"] }, "right": { "title": "DEPOIS", "items": ["um campo no roteiro", "cenas se ajustam"] } } },
+    { "id": "regra", "scene": "callout", "seconds": 4, "props": { "kicker": "A REGRA", "text": "Deixe o canto da câmera livre.", "sub": "Cada formato tem a sua região reservada." } },
+    { "id": "fim", "scene": "closing", "seconds": 4, "props": { "kicker": "PRONTO", "lines": ["Grave uma vez.", "Publique em pé."], "next": "próximo: o seu primeiro Reels" } }
+  ]
+}

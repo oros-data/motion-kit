@@ -10,8 +10,6 @@ const RULES = {
   'long-word': 'error',
 };
 const DEFAULTS = { emptySeconds: 1.0, minFontPx: 18, errorFontPx: 14, step: 0.25 };
-const FRAME = { width: 1920, height: 1080 };
-const PRESENTER = { x1: 1492, y1: 830, x2: 1848, y2: 1030 };
 const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.woff2': 'font/woff2', '.woff': 'font/woff', '.ttf': 'font/ttf', '.otf': 'font/otf' };
 
 const HARNESS = `<!DOCTYPE html>
@@ -21,8 +19,8 @@ const HARNESS = `<!DOCTYPE html>
 <link rel="stylesheet" href="theme.css">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--bg); }
-#stage { position: relative; width: 1920px; height: 1080px; overflow: hidden; color: var(--text); font-family: var(--font-display); }
+html, body { overflow: hidden; background: var(--bg); }
+#stage { position: relative; overflow: hidden; color: var(--text); font-family: var(--font-display); }
 .clip { position: absolute; inset: 0; display: none; }
 </style></head>
 <body><div id="stage"></div>
@@ -30,6 +28,7 @@ html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--
 window.__timelines = {};
 window.__ready = (async () => {
   const stage = document.getElementById("stage");
+  for (const el of [document.documentElement, document.body, stage]) Object.assign(el.style, { width: window.KIT.width + "px", height: window.KIT.height + "px" });
   for (const id of window.KIT.order) {
     const slot = document.createElement("div");
     slot.className = "clip";
@@ -116,7 +115,7 @@ function measure(sceneId, local, cfg) {
       right: Math.max(...rects.map((r) => r.right)), bottom: Math.max(...rects.map((r) => r.bottom)),
     };
   };
-  const frameArea = 1920 * 1080;
+  const frameArea = cfg.frame.right * cfg.frame.bottom;
   const hasPaint = (cs) => alpha(cs.backgroundColor) > 0.05 || cs.backgroundImage !== 'none'
     || (['Top', 'Right', 'Bottom', 'Left'].some((s) => parseFloat(cs['border' + s + 'Width']) > 0 && cs['border' + s + 'Style'] !== 'none' && alpha(cs['border' + s + 'Color']) > 0.05));
   const out = { visible: 0, findings: [] };
@@ -255,7 +254,7 @@ const TIPS = {
   overflow: 'Encurte o texto, reduza a fonte ou largura no HTML da cena, ou use quebra de linha.',
   empty: 'Preencha o trecho (cena mais curta, elemento que entra antes) ou ajuste "seconds".',
   'small-text': 'Aumente a fonte para o mínimo ou remova o texto; o celular mostra o vídeo com 360 px de largura.',
-  presenter: 'Mova o elemento para fora de x 1492–1848, y 830–1030 (veja --variables \'{"debugSafe":true}\').',
+  presenter: 'Mova o elemento para fora da região do apresentador do formato (docs/scenes.md; veja --variables \'{"debugSafe":true}\').',
   'long-word': 'Troque a palavra, encurte-a ou aumente o contêiner; strings sem espaço não quebram.',
 };
 
@@ -292,13 +291,14 @@ export async function runGates({ buildDir, videoFile, browserPath }) {
   const grouped = new Map();
   try {
     const page = await browser.newPage();
-    await page.setViewport({ width: FRAME.width, height: FRAME.height });
+    await page.setViewport({ width: data.width, height: data.height });
     const pageErrors = [];
     page.on('pageerror', (e) => pageErrors.push(e.message));
     await page.goto(`http://127.0.0.1:${server.address().port}/__gates.html`, { waitUntil: 'load' });
     await page.evaluate(() => window.__ready);
     if (pageErrors.length) throw new Error(`erro de script nas cenas: ${pageErrors[0]}`);
-    const pageCfg = { presenter: PRESENTER, minFontPx: cfg.minFontPx, errorFontPx: cfg.errorFontPx, frame: { left: 0, top: 0, right: FRAME.width, bottom: FRAME.height } };
+    const { camera } = data;
+    const pageCfg = { presenter: { x1: camera.x, y1: camera.y, x2: camera.x + camera.width, y2: camera.y + camera.height }, minFontPx: cfg.minFontPx, errorFontPx: cfg.errorFontPx, frame: { left: 0, top: 0, right: data.width, bottom: data.height } };
 
     for (const id of data.order) {
       const item = data.items[id];

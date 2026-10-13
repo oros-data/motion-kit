@@ -1,7 +1,7 @@
 <template>
   <style>
     /*__FONTS__*/
-    [data-composition-id="__ID__"] { position: absolute; inset: 0; }
+    [data-composition-id="__ID__"] { position: absolute; inset: 0; container-type: size; }
     [data-composition-id="__ID__"] .fx { position: absolute; inset: 0; opacity: 0; }
     [data-composition-id="__ID__"] .win { position: absolute; left: 70px; top: 125px; width: 1300px; height: 815px; border: 3px solid var(--line); border-radius: 18px; background: var(--term-bg); overflow: hidden; box-shadow: 0 0 44px color-mix(in srgb, var(--primary) 14%, transparent), inset 0 0 45px rgba(0,0,0,.4); font-family: var(--font-mono); font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
     [data-composition-id="__ID__"] .bar { height: 68px; border-bottom: 2px solid var(--term-line); display: flex; align-items: center; padding: 0 28px; gap: 13px; background: var(--term-surface); }
@@ -27,6 +27,7 @@
     [data-composition-id="__ID__"] .foot .exs { position: relative; width: 120px; text-align: right; }
     [data-composition-id="__ID__"] .foot .ex { position: absolute; right: 0; top: 0; opacity: 0; }
     [data-composition-id="__ID__"] .diag { position: absolute; left: 1408px; top: 120px; width: 440px; height: 410px; font-family: var(--font-mono); }
+    [data-composition-id="__ID__"] .diag:empty { display: none; }
     [data-composition-id="__ID__"] .box { position: absolute; left: 0; width: 440px; height: 120px; border: 2px solid; border-radius: 14px; background: color-mix(in srgb, var(--bg) 90%, transparent); padding: 15px 19px; font-size: 22px; letter-spacing: 1.5px; font-weight: 700; }
     [data-composition-id="__ID__"] .chip { position: absolute; min-width: 130px; padding: 0 12px; height: 43px; border: 2px solid; border-radius: 8px; background: var(--surface); font-size: 18px; font-weight: 700; display: flex; align-items: center; justify-content: center; opacity: 0; white-space: nowrap; }
     [data-composition-id="__ID__"] .arrow { position: absolute; font-size: 30px; opacity: 0; width: 30px; text-align: center; }
@@ -35,8 +36,32 @@
     [data-composition-id="__ID__"] .cb { position: absolute; left: 28px; right: 0; top: 22px; opacity: 0; }
     [data-composition-id="__ID__"] .cb .a { font-size: 30px; line-height: 1.25; font-weight: 800; color: var(--concept); }
     [data-composition-id="__ID__"] .cb .b { font-family: var(--font-body); font-size: 25px; line-height: 1.4; color: var(--text); margin-top: 18px; }
+    @container (aspect-ratio <= 1) {
+      [data-composition-id="__ID__"] .win { left: 72px; top: 110px; width: calc(100% - 144px); height: 680px; }
+      [data-composition-id="__ID__"] .bar { height: 56px; padding: 0 22px; }
+      [data-composition-id="__ID__"] .wt { font-size: 20px; }
+      [data-composition-id="__ID__"] .wg { font-size: 17px; }
+      [data-composition-id="__ID__"] .steps { top: 56px; bottom: 40px; }
+      [data-composition-id="__ID__"] .step { padding: 24px 30px; font-size: 28px; }
+      [data-composition-id="__ID__"] .prev { font-size: 20px; margin-bottom: 18px; }
+      [data-composition-id="__ID__"] .no { font-size: 20px; margin-bottom: 14px; }
+      [data-composition-id="__ID__"] .cmdrow { font-size: 30px; min-height: 38px; }
+      [data-composition-id="__ID__"] .out { margin-top: 22px; font-size: 24px; line-height: 33px; }
+      [data-composition-id="__ID__"] .ol { min-height: 33px; }
+      [data-composition-id="__ID__"] .none { font-size: 22px; }
+      [data-composition-id="__ID__"] .foot { height: 40px; padding: 8px 20px; font-size: 17px; }
+      [data-composition-id="__ID__"] .callout { left: 72px; top: 820px; width: 560px; min-height: 190px; padding: 14px 0 14px 24px; }
+      [data-composition-id="__ID__"] .cb { left: 24px; top: 14px; }
+    }
+    @container (aspect-ratio < 1) {
+      [data-composition-id="__ID__"] .win { top: 150px; height: 820px; }
+      [data-composition-id="__ID__"] .diag { left: 72px; top: 1010px; }
+      [data-composition-id="__ID__"] .callout { left: 552px; top: 1010px; width: auto; right: 72px; min-height: 380px; padding: 22px 0 20px 28px; }
+      [data-composition-id="__ID__"] .diag:empty + .callout { left: 72px; min-height: 190px; }
+      [data-composition-id="__ID__"] .cb { left: 28px; top: 22px; }
+    }
   </style>
-  <div data-composition-id="__ID__" data-width="1920" data-height="1080">
+  <div data-composition-id="__ID__" data-width="__WIDTH__" data-height="__HEIGHT__">
     <div class="fx">
       <div class="win">
         <div class="bar"><i class="dot" style="background:var(--danger)"></i><i class="dot" style="background:var(--primary)"></i><i class="dot" style="background:var(--secondary)"></i><span class="wt"></span><span class="wg"></span></div>
@@ -223,7 +248,7 @@
           tl.fromTo(win, { scale: 1 }, { scale: 1.008, duration: D / 2, ease: "sine.inOut", immediateRender: false }, start);
           tl.to(win, { scale: 1, duration: D / 2, ease: "sine.inOut" }, start + D / 2);
 
-          (step.diagram || []).forEach((op) => ops[op.op] && ops[op.op](op, start + f(outStart) + 0.2, D, step));
+          if (places.length) (step.diagram || []).forEach((op) => ops[op.op] && ops[op.op](op, start + f(outStart) + 0.2, D, step));
         });
         window.__timelines["__ID__"] = tl;
       })();

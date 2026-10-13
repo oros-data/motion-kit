@@ -1,7 +1,7 @@
 <template>
   <style>
     /*__FONTS__*/
-    [data-composition-id="__ID__"] { position: absolute; inset: 0; }
+    [data-composition-id="__ID__"] { position: absolute; inset: 0; container-type: size; }
     [data-composition-id="__ID__"] .fx { position: absolute; inset: 0; padding: 150px 140px 110px; opacity: 0; }
     [data-composition-id="__ID__"] .kicker { font-family: var(--font-mono); font-size: 25px; color: var(--aside); letter-spacing: 4px; font-weight: 700; margin-bottom: 20px; }
     [data-composition-id="__ID__"] h2 { font-size: 68px; line-height: 1.08; font-weight: 800; color: var(--concept); max-width: 1400px; }
@@ -11,8 +11,29 @@
     [data-composition-id="__ID__"] .card .t { font-size: 36px; line-height: 1.12; font-weight: 800; color: var(--text); }
     [data-composition-id="__ID__"] .card .b { font-family: var(--font-body); font-size: 28px; line-height: 1.45; color: var(--text); margin-top: 24px; }
     [data-composition-id="__ID__"] .foot { font-family: var(--font-body); font-size: 30px; color: var(--muted); margin-top: 42px; }
+
+    @container (aspect-ratio <= 1) {
+      [data-composition-id="__ID__"] .fx { padding: 140px 72px 0; }
+      [data-composition-id="__ID__"] h2 { font-size: 56px; }
+      [data-composition-id="__ID__"] .cards { flex-wrap: wrap; gap: 20px; margin-top: 40px; }
+      [data-composition-id="__ID__"] .card { flex: 1 1 40%; min-height: 0; padding: 24px 28px; }
+      [data-composition-id="__ID__"] .card .n { font-size: 24px; margin-bottom: 14px; }
+      [data-composition-id="__ID__"] .card .t { font-size: 32px; }
+      [data-composition-id="__ID__"] .card .b { font-size: 26px; margin-top: 12px; }
+      [data-composition-id="__ID__"] .foot { font-size: 26px; margin-top: 28px; }
+    }
+    @container (aspect-ratio < 1) {
+      [data-composition-id="__ID__"] .fx { display: flex; flex-direction: column; justify-content: center; padding: 150px 72px 520px; }
+      [data-composition-id="__ID__"] .cards { flex-direction: column; margin-top: 56px; }
+      [data-composition-id="__ID__"] .card { flex: none; padding: 30px 34px; }
+      [data-composition-id="__ID__"] h2 { font-size: 72px; }
+      [data-composition-id="__ID__"] .card .n { font-size: 28px; }
+      [data-composition-id="__ID__"] .card .t { font-size: 42px; }
+      [data-composition-id="__ID__"] .card .b { font-size: 34px; }
+      [data-composition-id="__ID__"] .foot { font-size: 32px; }
+    }
   </style>
-  <div data-composition-id="__ID__" data-width="1920" data-height="1080">
+  <div data-composition-id="__ID__" data-width="__WIDTH__" data-height="__HEIGHT__">
     <div class="fx">
       <div class="kicker"></div>
       <h2></h2>
