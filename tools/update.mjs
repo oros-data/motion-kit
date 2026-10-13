@@ -1,4 +1,4 @@
-import { chmodSync, existsSync, mkdirSync, readFileSync, realpathSync, statSync, writeFileSync } from 'node:fs';
+import { chmodSync, existsSync, lstatSync, mkdirSync, readFileSync, realpathSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
@@ -14,6 +14,7 @@ const FILES = ['package.json', 'package-lock.json', 'AGENTS.md', 'NOTICES.md', '
 const VERSION_FILE = 'kit.version';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const realRoot = realpathSync(root);
 const argv = process.argv.slice(2);
 const apply = argv.includes('--apply');
 const tagIndex = argv.indexOf('--tag');
@@ -25,6 +26,13 @@ function fail(message) {
 }
 
 const allowed = (path) => FILES.includes(path) || DIRS.some((d) => path.startsWith(d));
+
+function inside(target) {
+  let dir = dirname(target);
+  while (!existsSync(dir)) dir = dirname(dir);
+  const real = realpathSync(dir);
+  return (real === realRoot || real.startsWith(realRoot + sep)) && !(existsSync(target) && lstatSync(target).isSymbolicLink());
+}
 
 function git(args) {
   const r = spawnSync('git', args, { cwd: root, encoding: 'utf8' });
@@ -99,7 +107,7 @@ function lineSummary(before, after) {
 }
 
 if (wanted !== null && !TAG.test(wanted || '')) fail(`--tag precisa ser vMAIOR.MENOR.CORREÇÃO, por exemplo v0.2.0`);
-if (realpathSync(git(['rev-parse', '--show-toplevel']).trim()) !== realpathSync(root)) fail(`rode dentro da sua cópia do kit (${root})`);
+if (realpathSync(git(['rev-parse', '--show-toplevel']).trim()) !== realRoot) fail(`rode dentro da sua cópia do kit (${root})`);
 const dirty = git(['status', '--porcelain', '--', ...DIRS, ...FILES, VERSION_FILE]).trim();
 if (dirty) fail(`há mudanças não commitadas em arquivos do kit:\n${dirty}\ncommite ou descarte antes de atualizar.`);
 
@@ -115,7 +123,7 @@ const changes = [];
 for (const [path, file] of [...files].sort(([a], [b]) => a.localeCompare(b))) {
   if (!allowed(path)) continue;
   const target = resolve(root, path);
-  if (!target.startsWith(root + sep)) fail(`caminho fora do repositório: ${path}`);
+  if (!target.startsWith(root + sep) || !inside(target)) fail(`caminho fora do repositório ou link simbólico: ${path}`);
   if (!existsSync(target)) changes.push({ path, target, file, status: 'A', summary: lineSummary(Buffer.alloc(0), file.data) });
   else {
     const before = readFileSync(target);
