@@ -40,7 +40,7 @@ npm run smoke
 
 ## 4. Sua identidade
 
-Separe: nome, até 7 cores (ou escolha um tema pronto), um logo em SVG, as fontes (opcional; o kit traz Inter e JetBrains Mono) e uma frase de assinatura. Leia `docs/identity.md`.
+Separe: nome, até 7 cores (ou escolha um tema pronto), um logo (SVG, PNG ou WebP), as fontes (opcional; o kit traz Inter e JetBrains Mono) e uma frase de assinatura. Leia `docs/identity.md`.
 
 ## 5. Se der errado
 

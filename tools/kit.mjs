@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { build } from './build.mjs';
 import { contrastReport, fontReport, loadIdentity, textRoles, validateIdentity } from './identity.mjs';
+import { loadLogo } from './logo.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
@@ -152,6 +153,7 @@ const commands = {
       if (r.status === 'fail') failed = true;
     }
     console.log(failed ? '\najuste as cores: um FAIL deixa texto ilegível no celular.' : '\ncontraste ok. Próximo: npm run snapshot -- ' + EXAMPLE);
+    for (const warning of loadLogo(root, identity, theme).warnings) console.log(`AVISO logo: ${warning}`);
     process.exit(failed ? 1 : 0);
   },
 
