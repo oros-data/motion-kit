@@ -3,7 +3,7 @@ import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { build } from './build.mjs';
-import { contrastReport, loadIdentity, textRoles, validateIdentity } from './identity.mjs';
+import { contrastReport, fontReport, loadIdentity, textRoles, validateIdentity } from './identity.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
@@ -121,6 +121,7 @@ const commands = {
       const errors = validateIdentity(root, identity);
       identityOk = errors.length === 0;
       line(identityOk, 'brand/identity.json e arquivos de fonte/logo', errors.join('; '));
+      if (identityOk) for (const f of fontReport(identity)) console.log(`     fonte ${f.slot}: ${f.family}, pesos ${f.weights.join(' ')}${f.missing.length ? `; AVISO: falta ${f.missing.join(', ')}` : ''}`);
     } catch (error) {
       identityOk = false;
       line(false, 'brand/identity.json', error.message);
@@ -143,6 +144,8 @@ const commands = {
     console.log(`identidade "${identity.name}" (${identity.slug}), tema ${theme.name}, modo ${theme.mode}`);
     console.log(`papéis: ${Object.entries(theme.roles).map(([k, v]) => `${k}=${v}`).join(' ')}`);
     console.log(`texto por papel: ${Object.entries(text).map(([k, v]) => `${k}=${v}`).join(' ')}`);
+    for (const f of fontReport(identity)) console.log(`${f.missing.length ? 'AVISO' : 'OK   '} fonte ${f.slot}: ${f.family}, pesos ${f.weights.join(' ')}${f.missing.length ? `; falta ${f.missing.join(', ')} (o navegador usa o peso mais próximo)` : ''}`);
+    if (!identity.fonts.body) console.log(`OK    fonte body: não definida, usa ${identity.fonts.display.family} (display)`);
     let failed = false;
     for (const r of contrastReport(theme, text)) {
       console.log(`${r.status.toUpperCase().padEnd(5)} ${r.label}: ${r.ratio}:1 (mínimo ${r.min}:1) ${r.fg} sobre ${r.bg}`);

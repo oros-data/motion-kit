@@ -20,7 +20,8 @@ Chrome headless shell (baixado pelo HyperFrames para o cache do usuário), FFmpe
 ## Sua identidade
 
 - Use só logos e marcas que você possui ou tem autorização para usar.
-- Fontes próprias em `brand/fonts/` precisam de licença que permita incorporação em vídeo; coloque o arquivo de licença na mesma pasta. Fontes do Google Fonts (OFL, Apache ou UFL) servem.
+- Fontes próprias em `brand/fonts/` (display, body ou mono) precisam de licença que permita incorporação em vídeo; coloque o arquivo de licença na mesma pasta, com o nome da família (`OFL-Roboto.txt`), ou registre `license` na fonte em `identity.json`. O `identity:check` recusa fonte sem uma das duas. Fontes do Google Fonts (OFL, Apache ou UFL) servem.
+- O kit nunca baixa fontes: você copia os arquivos para o repositório.
 - Não versione fontes com licença que proíba redistribuição em repositório; mantenha-as fora do Git ou use as do kit.
 
 ## O que o kit nunca faz
